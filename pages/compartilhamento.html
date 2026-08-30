@@ -1,0 +1,25 @@
+      <div class="view" id="view-compartilhamento">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">🔗 Compartilhar Prontuário</span></div>
+            <p class="text-sm text-mid mb-4">Gere um código de acesso temporário para um veterinário visualizar o prontuário do seu pet.</p>
+            <div class="form-group"><label>Pet</label><select class="form-input"><option>🐕 Thor</option><option>🐱 Luna</option></select></div>
+            <div class="form-row">
+              <div class="form-group"><label>Validade</label><select class="form-input"><option>24 horas</option><option>7 dias</option><option>30 dias</option><option>Permanente</option></select></div>
+              <div class="form-group"><label>Nível de Acesso</label><select class="form-input"><option>Somente leitura</option><option>Leitura e edição</option></select></div>
+            </div>
+            <button class="btn-sm btn-green w-full" style="padding:12px" onclick="generateCode()">Gerar código de acesso</button>
+            <div class="share-code" id="share-code" style="display:none">
+              <span id="share-code-val">— —— ——</span>
+              <button onclick="copyCode()" style="background:rgba(255,255,255,0.15);border:none;color:var(--green-pale);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px">Copiar</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">📜 Histórico de Acessos</span></div>
+            <div class="access-item"><div class="contact-avatar" style="background:var(--sky);width:32px;height:32px;font-size:13px">P</div><div><div style="font-size:13px;font-weight:500">Dr. Pedro Alves</div><div style="font-size:11px;color:var(--text-light)">Acessou prontuário do Thor · 12/04 14:30</div></div><span class="tag tag-green" style="font-size:10px">Autorizado</span></div>
+            <div class="access-item"><div class="contact-avatar" style="background:var(--coral);width:32px;height:32px;font-size:13px">A</div><div><div style="font-size:13px;font-weight:500">Dr.ª Ana Costa</div><div style="font-size:11px;color:var(--text-light)">Acessou prontuário da Luna · 15/01 11:15</div></div><span class="tag tag-green" style="font-size:10px">Autorizado</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== RELATÓRIOS ===== -->

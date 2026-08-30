@@ -1,0 +1,63 @@
+      <div class="view" id="view-vacinas">
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-header">
+            <div class="card-title-icon">
+              <div class="title-icon" style="background:var(--amber-light)">💉</div>
+              <span class="card-title">Carteira de Vacinação — Thor</span>
+            </div>
+            <div style="display:flex;gap:8px">
+              <select class="form-input" style="width:auto;padding:8px 12px;font-size:13px">
+                <option>🐕 Thor</option><option>🐱 Luna</option><option>🐰 Pipoca</option>
+              </select>
+              <button class="btn-sm btn-green" data-role-vet-only data-role-clinica-only onclick="openVaccineModal()">+ Registrar Vacina</button>
+            </div>
+          </div>
+          <div class="vaccine-grid">
+            <div class="vaccine-item">
+              <div class="vax-icon" style="background:var(--green-pale)">💉</div>
+              <div class="vax-info">
+                <div class="vax-name">V10 — Polivalente</div>
+                <div class="vax-date">Aplicada: 10/03/2024 · Reforço: 10/03/2025 · Dr. Pedro</div>
+              </div>
+              <span class="vax-status vax-soon">⚠ Em breve</span>
+            </div>
+            <div class="vaccine-item">
+              <div class="vax-icon" style="background:var(--green-pale)">🦠</div>
+              <div class="vax-info">
+                <div class="vax-name">Antirrábica</div>
+                <div class="vax-date">Aplicada: 05/03/2024 · Reforço: 05/03/2026</div>
+              </div>
+              <span class="vax-status vax-ok">✓ Em dia</span>
+            </div>
+            <div class="vaccine-item">
+              <div class="vax-icon" style="background:var(--amber-light)">🔬</div>
+              <div class="vax-info">
+                <div class="vax-name">Giardíase</div>
+                <div class="vax-date">Aplicada: 20/06/2024 · Reforço: 20/06/2025</div>
+              </div>
+              <span class="vax-status vax-ok">✓ Em dia</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-icon">
+              <div class="title-icon" style="background:var(--coral-light)">🚨</div>
+              <span class="card-title">Alertas — Luna</span>
+            </div>
+          </div>
+          <div class="vaccine-grid">
+            <div class="vaccine-item" style="border-color:var(--coral)">
+              <div class="vax-icon" style="background:var(--coral-light)">💉</div>
+              <div class="vax-info">
+                <div class="vax-name">V10 — Polivalente</div>
+                <div class="vax-date">Venceu: 12/04/2025 · Há 8 dias</div>
+              </div>
+              <span class="vax-status vax-expired">❌ Vencida</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CONSULTAS ===== -->

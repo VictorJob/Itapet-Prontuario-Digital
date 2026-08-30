@@ -1,0 +1,62 @@
+      <div class="view" id="view-exames">
+        <div class="grid-2">
+          <div data-role-vet-only data-role-clinica-only>
+            <div class="card" style="margin-bottom:20px">
+              <div class="card-header">
+                <span class="card-title">Upload de Documentos / Solicitar Exame</span>
+              </div>
+              <div class="form-group">
+                <label>Pet</label>
+                <select class="form-input">
+                  <option>🐕 Thor</option><option>🐱 Luna</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Tipo</label>
+                <select class="form-input">
+                  <option>Exame laboratorial</option><option>Raio-X / Imagem</option>
+                  <option>Receita médica</option><option>Laudo</option><option>Outro</option>
+                </select>
+              </div>
+              <div class="upload-area" onclick="triggerUpload()" id="drop-area">
+                <div class="upload-icon">📁</div>
+                <p><strong>Clique ou arraste o arquivo aqui</strong></p>
+                <span>PDF, JPG, PNG — até 20MB</span>
+              </div>
+              <input type="file" id="file-input" style="display:none" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(event)">
+              <button class="btn-primary" onclick="showToast('Arquivo enviado com sucesso! 📂')">Enviar documento</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title" data-exames-list-title>Documentos Salvos</span>
+              <span class="tag tag-green" style="font-size:11px">12 arquivos</span>
+            </div>
+            <div class="file-list">
+              <div class="file-item">
+                <div class="file-icon" style="background:#FFE4E4;color:#E53E3E">📄</div>
+                <div class="file-info"><div class="file-name">Hemograma_Thor_04-2025.pdf</div><div class="file-meta">PDF · 1.2MB · 10/04/2025</div></div>
+                <button class="btn-sm btn-outline" style="font-size:11px">👁 Ver</button>
+              </div>
+              <div class="file-item">
+                <div class="file-icon" style="background:#EBF8FF;color:#2B6CB0">🔬</div>
+                <div class="file-info"><div class="file-name">RaioX_Thor_08-2024.jpg</div><div class="file-meta">JPG · 3.4MB · 03/08/2024</div></div>
+                <button class="btn-sm btn-outline" style="font-size:11px">👁 Ver</button>
+              </div>
+              <div class="file-item">
+                <div class="file-icon" style="background:#FEFCBF;color:#B7791F">📋</div>
+                <div class="file-info"><div class="file-name">Receita_Otite_Luna.pdf</div><div class="file-meta">PDF · 0.5MB · 15/01/2025</div></div>
+                <button class="btn-sm btn-outline" style="font-size:11px">👁 Ver</button>
+              </div>
+              <div class="file-item">
+                <div class="file-icon" style="background:#F0FFF4;color:#276749">🧫</div>
+                <div class="file-info"><div class="file-name">Bioquimico_Luna_01-2025.pdf</div><div class="file-meta">PDF · 0.8MB · 15/01/2025</div></div>
+                <button class="btn-sm btn-outline" style="font-size:11px">👁 Ver</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MEDICAMENTOS ===== -->

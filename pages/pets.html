@@ -1,0 +1,44 @@
+      <div class="view" id="view-pets">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+          <div></div>
+          <button class="btn-sm btn-green" onclick="openAddPetModal()" style="padding:10px 20px;font-size:14px">+ Cadastrar novo pet</button>
+        </div>
+        <div class="pets-grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
+          <div class="pet-card" onclick="showPetProfile('Thor')" style="padding:28px 20px">
+            <div class="pet-avatar" style="background:var(--amber-light);width:80px;height:80px;font-size:40px">🐕<div class="status-dot ok"></div></div>
+            <div class="pet-name" style="font-size:20px;margin-top:4px">Thor</div>
+            <div class="pet-breed">Golden Retriever</div>
+            <div style="font-size:12px;color:var(--text-light);margin:6px 0 10px">Macho · 3 anos · 28kg</div>
+            <div class="pet-tags">
+              <span class="tag tag-green">Saudável</span>
+              <span class="tag tag-amber">Vacina em breve</span>
+            </div>
+            <div style="margin-top:14px;font-size:12px;color:var(--text-light)">🔖 Microchip: #12345678</div>
+          </div>
+          <div class="pet-card" onclick="showPetProfile('Luna')" style="padding:28px 20px">
+            <div class="pet-avatar" style="background:var(--sky-light);width:80px;height:80px;font-size:40px">🐱<div class="status-dot warn"></div></div>
+            <div class="pet-name" style="font-size:20px;margin-top:4px">Luna</div>
+            <div class="pet-breed">SRD (Gata)</div>
+            <div style="font-size:12px;color:var(--text-light);margin:6px 0 10px">Fêmea · 2 anos · 4.2kg</div>
+            <div class="pet-tags">
+              <span class="tag tag-coral">Vacina vencida</span>
+              <span class="tag tag-sky">Castrada</span>
+            </div>
+            <div style="margin-top:14px;font-size:12px;color:var(--text-light)">🔖 Microchip: —</div>
+          </div>
+          <div class="pet-card" onclick="showPetProfile('Pipoca')" style="padding:28px 20px">
+            <div class="pet-avatar" style="background:var(--purple-light);width:80px;height:80px;font-size:40px">🐰<div class="status-dot ok"></div></div>
+            <div class="pet-name" style="font-size:20px;margin-top:4px">Pipoca</div>
+            <div class="pet-breed">Coelho Mini Lop</div>
+            <div style="font-size:12px;color:var(--text-light);margin:6px 0 10px">Fêmea · 1 ano · 1.5kg</div>
+            <div class="pet-tags"><span class="tag tag-green">Saudável</span></div>
+            <div style="margin-top:14px;font-size:12px;color:var(--text-light)">🔖 Microchip: —</div>
+          </div>
+          <div class="add-pet-card" onclick="openAddPetModal()">
+            <div class="add-icon">➕</div>
+            <span>Adicionar novo pet</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PRONTUÁRIO ===== -->

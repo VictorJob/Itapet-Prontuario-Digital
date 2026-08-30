@@ -1,0 +1,34 @@
+      <div class="view" id="view-chat">
+        <div class="chat-container">
+          <div class="chat-contacts">
+            <div class="chat-contacts-header">Conversas</div>
+            <div class="contact-item active">
+              <div class="contact-avatar" style="background:var(--sky)">P</div>
+              <div><div class="contact-name">Dr. Pedro Alves</div><div class="contact-last">Ótimo, até amanhã! 👍</div></div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-avatar" style="background:var(--coral)">A</div>
+              <div><div class="contact-name">Dr.ª Ana Costa</div><div class="contact-last">O resultado do exame...</div></div>
+            </div>
+          </div>
+          <div class="chat-messages">
+            <div class="chat-header">
+              <div class="contact-avatar" style="background:var(--sky)">P</div>
+              <div><div class="contact-name">Dr. Pedro Alves</div><div style="font-size:11px;color:var(--green-light)">● Online</div></div>
+            </div>
+            <div class="chat-body" id="chat-body">
+              <div class="msg msg-recv">Olá Maria! Vi que o Thor tem consulta amanhã. Há alguma mudança no comportamento que devo saber?<div class="msg-time">14:32</div></div>
+              <div class="msg msg-sent">Oi Dr. Pedro! Sim, ele está coçando bastante o ouvido esquerdo novamente...<div class="msg-time">14:45</div></div>
+              <div class="msg msg-recv">Entendido. Vou dar uma atenção especial à região auricular na consulta de amanhã. Pode trazer o histórico do tratamento anterior se tiver.<div class="msg-time">14:47</div></div>
+              <div class="msg msg-sent">Já está no prontuário aqui no Itapet! Vou compartilhar o acesso.<div class="msg-time">14:48</div></div>
+              <div class="msg msg-recv">Ótimo, até amanhã! 👍<div class="msg-time">14:49</div></div>
+            </div>
+            <div class="chat-input-area">
+              <input class="chat-input" id="chat-input" placeholder="Digite uma mensagem..." onkeypress="handleChatKey(event)">
+              <button class="send-btn" onclick="sendMessage()">➤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== COMPARTILHAMENTO ===== -->
