@@ -21,6 +21,9 @@ async function loadPage(name) {
   if (name === 'dashboard' && typeof buildWeightChart === 'function') {
     buildWeightChart();
   }
+  if (name === 'pets' && typeof renderSavedPets === 'function') {
+    renderSavedPets();
+  }
 }
 
 const _activateView = showView;

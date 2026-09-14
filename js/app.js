@@ -17,13 +17,11 @@ const POPUP_NOTIFS = {
     { type:'alert', icon:'💉', bg:'var(--coral-light)', title:'Vacina vencida — Luna', desc:'V10 Polivalente venceu há 7 dias. Agende agora!', delay:800 },
     { type:'warn',  icon:'📅', bg:'var(--amber-light)', title:'Consulta amanhã — Thor', desc:'Dr. Pedro Alves · ClínicaPet · 14:00h', delay:2400 },
     { type:'ok',    icon:'💊', bg:'var(--green-pale)',  title:'Lembrete de medicamento', desc:'Vermífugo do Thor — hoje às 20:00h', delay:4000 },
-    { type:'info',  icon:'🔗', bg:'var(--sky-light)',   title:'Acesso ao prontuário', desc:'Dr.ª Ana Costa acessou o histórico da Luna', delay:5600 },
   ],
   clinica: [
     { type:'alert', icon:'📋', bg:'var(--coral-light)', title:'Nova solicitação de reserva', desc:'Maria Silva — Thor — 25/abr às 14h', delay:800 },
     { type:'warn',  icon:'🩺', bg:'var(--amber-light)', title:'Veterinário pendente de aprovação', desc:'Dr. Carlos Menezes — CRMV-SP 54321', delay:2400 },
     { type:'ok',    icon:'✅', bg:'var(--green-pale)',  title:'Agenda do dia confirmada', desc:'5 consultas agendadas para hoje', delay:4000 },
-    { type:'info',  icon:'💬', bg:'var(--sky-light)',   title:'Nova mensagem no chat', desc:'Tutor João Oliveira: "Quando posso trazer..."', delay:5600 },
     { type:'warn',  icon:'💉', bg:'var(--amber-light)', title:'Paciente com vacina vencida', desc:'Luna (SRD) — V10 vencida há 7 dias', delay:7200 },
   ],
 };
@@ -79,9 +77,6 @@ const ROLE_MENUS = {
     { id:'consultas', icon:'📅', label:'Consultas' },
     { id:'exames', icon:'🧪', label:'Exames' },
     { id:'medicamentos', icon:'💊', label:'Medicamentos' },
-    { section: 'Comunicação' },
-    { id:'chat', icon:'💬', label:'Chat', badge:'1' },
-    { id:'compartilhamento', icon:'🔗', label:'Compartilhar' },
     { section: 'Mais' },
     { id:'relatorios', icon:'📊', label:'Relatórios' },
     { id:'planos', icon:'💰', label:'Planos' },
@@ -100,9 +95,6 @@ const ROLE_MENUS = {
     { id:'vacinas', icon:'💉', label:'Vacinas', badge:'1' },
     { id:'exames', icon:'🧪', label:'Exames' },
     { id:'medicamentos', icon:'💊', label:'Prescrições' },
-    { section: 'Comunicação' },
-    { id:'chat', icon:'💬', label:'Chat', badge:'3' },
-    { id:'compartilhamento', icon:'🔗', label:'Compartilhar' },
     { section: 'Gestão' },
     { id:'relatorios', icon:'📊', label:'Relatórios' },
     { id:'planos', icon:'💰', label:'Planos' },
@@ -139,12 +131,6 @@ function applyRoleVisibility() {
     const allowed = (isVetOnly && currentRole==='vet') || (isClinOnly && currentRole==='clinica');
     el.style.display = allowed ? '' : 'none';
   });
-  // Consultas: alternar título e botão conforme papel
-  document.querySelectorAll('[data-role-title]').forEach(el => {
-    el.textContent = currentRole==='tutor' ? 'Solicitar reserva de consulta' : 'Agendar Consulta';
-  });
-  document.querySelectorAll('[data-role-action="solicitar"]').forEach(el => el.style.display = currentRole==='tutor' ? '' : 'none');
-  document.querySelectorAll('[data-role-action="agendar"]').forEach(el => el.style.display = currentRole==='tutor' ? 'none' : '');
   // Exames: título da lista
   document.querySelectorAll('[data-exames-list-title]').forEach(el => {
     el.textContent = currentRole==='tutor' ? 'Documentos & Solicitações dos veterinários' : 'Documentos Salvos';
@@ -153,6 +139,8 @@ function applyRoleVisibility() {
 
 function enterApp(role) {
   currentRole = role || 'tutor';
+  document.body.classList.toggle('role-tutor', currentRole === 'tutor');
+  document.body.classList.toggle('role-clinica', currentRole === 'clinica');
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
   const prof = ROLE_PROFILE[currentRole] || ROLE_PROFILE.tutor;
@@ -169,10 +157,6 @@ function enterApp(role) {
   buildWeightChart();
   // fire popup notifications after short delay
   setTimeout(() => fireNotifications(currentRole), 600);
-}
-
-function solicitarReserva() {
-  showToast('Solicitação enviada à clínica! Aguarde os horários propostos. 📨');
 }
 
 function openVetModal() { document.getElementById('modal-vet').classList.add('open'); }
@@ -195,11 +179,9 @@ function showView(name, navEl) {
     pets: ['Meus Pets', 'Gerencie todos os seus pets cadastrados'],
     prontuario: ['Prontuário Digital', 'Histórico clínico completo — Thor'],
     vacinas: ['Carteira de Vacinação', 'Controle de vacinas e reforços'],
-    consultas: currentRole==='tutor' ? ['Consultas', 'Solicite reservas e gerencie suas consultas'] : ['Agenda', 'Agendamentos e atendimentos'],
+    consultas: currentRole==='tutor' ? ['Consultas', 'Acompanhe as consultas dos seus pets'] : ['Agenda', 'Agendamentos e atendimentos'],
     exames: currentRole==='tutor' ? ['Exames & Documentos', 'Visualize solicitações e laudos da clínica'] : ['Exames & Documentos', 'Upload, solicitações e visualização'],
     medicamentos: currentRole==='tutor' ? ['Medicamentos', 'Prescrições ativas dos seus pets'] : ['Medicamentos', 'Prescrições e controle de dosagem'],
-    chat: ['Chat', 'Comunicação entre tutor, veterinário e clínica'],
-    compartilhamento: ['Compartilhamento', 'Controle de acesso ao prontuário'],
     relatorios: ['Relatórios & Insights', 'Análise dos atendimentos'],
     planos: ['Planos', 'Escolha o melhor plano para você'],
     seguranca: ['Segurança & Privacidade', 'Proteção dos dados — LGPD'],
@@ -241,9 +223,28 @@ document.querySelectorAll('.modal-overlay').forEach(o => {
 
 const petEmojis = ['🐕','🐩','🐈','🐱','🐰','🐹','🦜','🐾','🐇','🦮'];
 let emojiIdx = 0;
+let pendingPetPhoto = '';
 function changePetEmoji(el) {
   emojiIdx = (emojiIdx + 1) % petEmojis.length;
   el.textContent = petEmojis[emojiIdx];
+}
+
+function previewPetPhoto(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showToast('Selecione uma imagem válida ⚠️'); return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    pendingPetPhoto = String(reader.result || '');
+    const image = document.getElementById('pet-photo-image');
+    const emoji = document.getElementById('pet-emoji');
+    if (image && emoji) {
+      image.src = pendingPetPhoto;
+      image.style.display = 'block';
+      emoji.style.display = 'none';
+    }
+  };
+  reader.readAsDataURL(file);
 }
 
 // ===== PETS REGISTRY =====
@@ -290,8 +291,11 @@ function checkPetCode() {
 function savePet() {
   const code = normalizeCode(document.getElementById('pet-code').value);
   const name = document.getElementById('pet-name').value.trim();
+  const ownerName = document.getElementById('pet-owner-name').value.trim();
+  const ownerPhone = document.getElementById('pet-owner-phone').value.trim();
   if (!name) { showToast('Informe o nome do pet ⚠️'); return; }
   if (!code) { showToast('Informe ou gere um código ⚠️'); return; }
+  if (!ownerName || !ownerPhone) { showToast('Informe o nome e o telefone do responsável ⚠️'); return; }
 
   const pets = loadPets();
   const exists = !!pets[code];
@@ -305,6 +309,9 @@ function savePet() {
     birth: document.getElementById('pet-birth').value,
     weight: document.getElementById('pet-weight').value,
     microchip: document.getElementById('pet-microchip').value,
+    ownerName,
+    ownerPhone,
+    photo: pendingPetPhoto || (exists ? pets[code].photo : ''),
     cadastrado: document.getElementById('pet-cadastrado').checked,
     updatedAt: new Date().toISOString(),
     createdAt: exists ? pets[code].createdAt : new Date().toISOString(),
@@ -312,13 +319,80 @@ function savePet() {
   savePetsRegistry(pets);
   closeModal('modal-add-pet');
   showToast(exists ? `Pet recadastrado! ♻️ (${code})` : `Pet cadastrado! 🐾 (${code})`);
+  renderSavedPets();
 
   // reset form
-  ['pet-name','pet-breed','pet-birth','pet-weight','pet-microchip','pet-code'].forEach(id => {
+  ['pet-name','pet-breed','pet-birth','pet-weight','pet-microchip','pet-code','pet-owner-name','pet-owner-phone','pet-photo'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   document.getElementById('pet-cadastrado').checked = true;
+  pendingPetPhoto = '';
+  const photoImage = document.getElementById('pet-photo-image');
+  const petEmoji = document.getElementById('pet-emoji');
+  if (photoImage && petEmoji) { photoImage.removeAttribute('src'); photoImage.style.display = 'none'; petEmoji.style.display = ''; }
   checkPetCode();
+}
+
+function escapeHtml(value) {
+  return String(value || '').replace(/[&<>'"]/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' })[char]);
+}
+
+function renderSavedPets() {
+  const container = document.getElementById('registered-pets');
+  if (!container) return;
+  const pets = Object.values(loadPets());
+  container.innerHTML = pets.map(pet => {
+    const avatar = pet.photo
+      ? `<div class="pet-avatar has-photo" style="width:80px;height:80px"><img src="${escapeHtml(pet.photo)}" alt="Foto de ${escapeHtml(pet.name)}"><div class="status-dot ok"></div></div>`
+      : `<div class="pet-avatar" style="background:var(--green-pale);width:80px;height:80px;font-size:40px">${escapeHtml(pet.emoji)}<div class="status-dot ok"></div></div>`;
+    const safePetName = encodeURIComponent(String(pet.name || '')).replace(/'/g, '%27');
+    return `<div class="pet-card" onclick="showPetProfile(decodeURIComponent('${safePetName}'))" style="padding:28px 20px">
+      ${avatar}
+      <div class="pet-name" style="font-size:20px;margin-top:4px">${escapeHtml(pet.name)}</div>
+      <div class="pet-breed">${escapeHtml(pet.breed || pet.species)}</div>
+      <div style="font-size:12px;color:var(--text-light);margin:6px 0 10px">${escapeHtml(pet.sex)}${pet.weight ? ` · ${escapeHtml(pet.weight)}kg` : ''}</div>
+      <div class="pet-tags"><span class="tag tag-green">Cadastrado</span></div>
+      <div class="pet-owner"><strong>Responsável:</strong> ${escapeHtml(pet.ownerName)}<br>${escapeHtml(pet.ownerPhone)}</div>
+    </div>`;
+  }).join('');
+}
+
+function generateReportPdf() {
+  if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Não foi possível gerar o PDF 😕'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setProperties({ title: 'Relatório de saúde — Thor', subject: 'Resumo clínico Itapet', author: 'Itapet' });
+  doc.setTextColor(27, 67, 50);
+  doc.setFontSize(22);
+  doc.text('Itapet', 20, 24);
+  doc.setFontSize(16);
+  doc.text('Relatório de saúde — Thor', 20, 36);
+  doc.setDrawColor(64, 145, 108);
+  doc.line(20, 42, 190, 42);
+  doc.setTextColor(26, 46, 34);
+  doc.setFontSize(12);
+  const rows = [
+    ['Pet', 'Thor — Golden Retriever, 3 anos'],
+    ['Responsável', 'Maria Silva'],
+    ['Saúde geral', 'Boa'],
+    ['Peso atual', '28 kg — estável'],
+    ['Consultas', '3 consultas em 2025'],
+    ['Atenção', 'Otite recorrente: 2 ocorrências em 12 meses'],
+    ['Próxima consulta', '25/04 às 14:00 — Dr. Pedro Alves'],
+  ];
+  let y = 56;
+  rows.forEach(([label, value]) => {
+    doc.setFont('helvetica', 'bold');
+    doc.text(label, 20, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(value, 62, y);
+    y += 12;
+  });
+  doc.setFontSize(9);
+  doc.setTextColor(100, 110, 105);
+  doc.text(`Emitido em ${new Date().toLocaleDateString('pt-BR')} pelo Itapet`, 20, 280);
+  doc.save('relatorio-saude-thor.pdf');
+  showToast('Relatório PDF gerado! 📄');
 }
 
 function saveVaccine() {
@@ -350,50 +424,6 @@ if (dropArea) {
     dropArea.style.borderColor = ''; dropArea.style.background = '';
     showToast(`${e.dataTransfer.files.length} arquivo(s) recebido(s) 📂`);
   });
-}
-
-// ===== CHAT =====
-function handleChatKey(e) { if (e.key === 'Enter') sendMessage(); }
-
-function sendMessage() {
-  const input = document.getElementById('chat-input');
-  const text = input.value.trim();
-  if (!text) return;
-  const body = document.getElementById('chat-body');
-  const msg = document.createElement('div');
-  msg.className = 'msg msg-sent';
-  const now = new Date();
-  msg.innerHTML = text + `<div class="msg-time">${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}</div>`;
-  body.appendChild(msg);
-  input.value = '';
-  body.scrollTop = body.scrollHeight;
-  setTimeout(() => {
-    const resp = document.createElement('div');
-    resp.className = 'msg msg-recv';
-    const responses = ['Entendido! Irei verificar no prontuário. 📋', 'Ok, obrigado pela informação! 👍', 'Ótimo, até a consulta então! 🐾', 'Certo, já anotei aqui. ✍️'];
-    resp.innerHTML = responses[Math.floor(Math.random()*responses.length)] + `<div class="msg-time">${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}</div>`;
-    body.appendChild(resp);
-    body.scrollTop = body.scrollHeight;
-  }, 1200);
-}
-
-// ===== SHARE CODE =====
-function generateCode() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let code = '';
-  for (let i = 0; i < 8; i++) {
-    if (i === 2 || i === 5) code += '-';
-    code += chars[Math.floor(Math.random() * chars.length)];
-  }
-  document.getElementById('share-code').style.display = 'flex';
-  document.getElementById('share-code-val').textContent = code;
-  showToast('Código gerado! Válido por 24h 🔗');
-}
-
-function copyCode() {
-  const code = document.getElementById('share-code-val').textContent;
-  navigator.clipboard.writeText(code).catch(() => {});
-  showToast('Código copiado! 📋');
 }
 
 // ===== WEIGHT CHART =====

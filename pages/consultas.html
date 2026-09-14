@@ -1,13 +1,9 @@
       <div class="view" id="view-consultas">
-        <div class="grid-2" style="margin-bottom:24px">
-          <!-- TUTOR: apenas solicita reserva; clínica é quem agenda -->
-          <div class="card role-tutor role-clinica role-vet">
+        <div class="grid-2 consultations-layout" style="margin-bottom:24px">
+          <div class="card" data-role-clinica-only>
             <div class="card-header">
-              <span class="card-title" data-role-title>Solicitar reserva de consulta</span>
+              <span class="card-title">Agendar Consulta</span>
             </div>
-            <p class="text-sm text-mid mb-4" data-role-tutor-only style="margin-bottom:14px;color:var(--text-mid);font-size:13px">
-              Envie sua solicitação. A clínica retornará com datas e horários disponíveis para confirmação.
-            </p>
             <div class="form-group">
               <label>Pet</label>
               <select class="form-input">
@@ -19,6 +15,16 @@
               <select class="form-input">
                 <option>Dr. Pedro Alves</option><option>Dr.ª Ana Costa</option>
               </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nome do responsável</label>
+                <input class="form-input" placeholder="Nome completo">
+              </div>
+              <div class="form-group">
+                <label>Telefone do responsável</label>
+                <input class="form-input" type="tel" placeholder="(11) 99999-9999">
+              </div>
             </div>
             <div class="form-row">
               <div class="form-group">
@@ -44,8 +50,7 @@
               <label>Observações</label>
               <textarea class="form-input" rows="2" placeholder="Sintomas ou motivo da consulta..."></textarea>
             </div>
-            <button class="btn-primary" data-role-action="solicitar" onclick="solicitarReserva()">Enviar solicitação de reserva</button>
-            <button class="btn-primary" data-role-action="agendar" style="display:none" onclick="showToast('Consulta agendada com sucesso! 📅')">Confirmar Agendamento</button>
+            <button class="btn-primary" onclick="showToast('Consulta agendada com sucesso! 📅')">Confirmar Agendamento</button>
           </div>
 
           <div>
@@ -58,10 +63,6 @@
                 <div class="appt-info">
                   <div class="appt-title">Consulta de rotina</div>
                   <div class="appt-details">Dr. Pedro · ClínicaPet</div>
-                  <div data-role-tutor-only style="display:flex;gap:6px;margin-top:8px">
-                    <button class="btn-sm btn-green" onclick="showToast('Presença confirmada! ✅')">✓ Confirmar presença</button>
-                    <button class="btn-sm btn-outline" onclick="showToast('Consulta cancelada ✖')">✖ Cancelar</button>
-                  </div>
                 </div>
                 <div class="appt-time">14:00<span class="pet-name-small">🐕 Thor</span></div>
               </div>
@@ -70,10 +71,6 @@
                 <div class="appt-info">
                   <div class="appt-title">Vacinação V10</div>
                   <div class="appt-details">Dr.ª Ana · VetBem</div>
-                  <div data-role-tutor-only style="display:flex;gap:6px;margin-top:8px">
-                    <button class="btn-sm btn-green" onclick="showToast('Presença confirmada! ✅')">✓ Confirmar presença</button>
-                    <button class="btn-sm btn-outline" onclick="showToast('Consulta cancelada ✖')">✖ Cancelar</button>
-                  </div>
                 </div>
                 <div class="appt-time">10:30<span class="pet-name-small">🐱 Luna</span></div>
               </div>

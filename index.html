@@ -21,7 +21,7 @@
     <div class="auth-features">
       <div class="auth-feature-item"><div class="feat-icon">📋</div><span>Prontuário digital completo</span></div>
       <div class="auth-feature-item"><div class="feat-icon">💉</div><span>Carteira de vacinação inteligente</span></div>
-      <div class="auth-feature-item"><div class="feat-icon">📅</div><span>Agendamento de consultas online</span></div>
+      <div class="auth-feature-item"><div class="feat-icon">📅</div><span>Acompanhamento de consultas</span></div>
       <div class="auth-feature-item"><div class="feat-icon">🔔</div><span>Alertas e lembretes automáticos</span></div>
       <div class="auth-feature-item"><div class="feat-icon">🔐</div><span>Dados seguros — LGPD</span></div>
     </div>
@@ -122,7 +122,7 @@
         <p id="page-subtitle">Resumo da saúde dos seus pets</p>
       </div>
       <div class="topbar-right">
-        <button class="icon-btn" onclick="showView('consultas', null)" title="Nova Consulta">
+        <button class="icon-btn" data-role-clinica-only onclick="showView('consultas', null)" title="Agendar consulta">
           <i class="fas fa-plus"></i>
         </button>
         <button class="icon-btn" onclick="openNotifModal()" title="Notificações">
@@ -150,9 +150,14 @@
       <div class="modal-title">🐾 Cadastrar novo pet</div>
       <button class="modal-close" onclick="closeModal('modal-add-pet')">✕</button>
     </div>
-    <div style="text-align:center;margin-bottom:24px">
-      <div id="pet-emoji" style="font-size:60px;cursor:pointer" onclick="changePetEmoji(this)">🐕</div>
-      <div style="font-size:11px;color:var(--text-light);margin-top:4px">Clique para mudar</div>
+    <div class="pet-photo-field">
+      <button type="button" class="pet-photo-preview" id="pet-photo-preview" onclick="document.getElementById('pet-photo').click()" aria-label="Selecionar foto do pet">
+        <span id="pet-emoji">🐕</span>
+        <img id="pet-photo-image" alt="Pré-visualização da foto do pet">
+      </button>
+      <input id="pet-photo" type="file" accept="image/*" hidden onchange="previewPetPhoto(event)">
+      <button type="button" class="btn-sm btn-outline" onclick="document.getElementById('pet-photo').click()">Adicionar foto</button>
+      <span class="field-help">JPG ou PNG</span>
     </div>
     <div class="form-row">
       <div class="form-group"><label>Nome do pet *</label><input id="pet-name" class="form-input" placeholder="Ex: Thor, Luna..."></div>
@@ -167,6 +172,10 @@
       <div class="form-group"><label>Peso (kg)</label><input id="pet-weight" type="number" class="form-input" placeholder="0.0" step="0.1"></div>
     </div>
     <div class="form-group"><label>Nº Microchip</label><input id="pet-microchip" class="form-input" placeholder="(opcional)"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Nome do responsável *</label><input id="pet-owner-name" class="form-input" placeholder="Nome completo"></div>
+      <div class="form-group"><label>Telefone do responsável *</label><input id="pet-owner-phone" class="form-input" type="tel" placeholder="(11) 99999-9999"></div>
+    </div>
     <div class="form-group">
       <label>Código do pet *</label>
       <div style="display:flex;gap:8px">
@@ -235,7 +244,6 @@
     <div class="notif-item"><div class="notif-icon" style="background:var(--coral-light)">💉</div><div class="notif-text"><div class="notif-title">Vacina da Luna vencida</div><div class="notif-desc">V10 — Agende a vacinação</div></div></div>
     <div class="notif-item"><div class="notif-icon" style="background:var(--amber-light)">📅</div><div class="notif-text"><div class="notif-title">Consulta do Thor amanhã</div><div class="notif-desc">Dr. Pedro — 25/04 às 14:00</div></div></div>
     <div class="notif-item"><div class="notif-icon" style="background:var(--green-pale)">💊</div><div class="notif-text"><div class="notif-title">Medicamento do Thor</div><div class="notif-desc">Vermífugo — Hoje às 20:00</div></div></div>
-    <div class="notif-item"><div class="notif-icon" style="background:var(--sky-light)">🔗</div><div class="notif-text"><div class="notif-title">Acesso ao prontuário</div><div class="notif-desc">Dr.ª Ana acessou histórico da Luna</div></div></div>
   </div>
 </div>
 
@@ -262,6 +270,7 @@
 <div id="popup-notif-stack"></div>
 
 <div id="toast" style="position:fixed;bottom:32px;right:32px;background:var(--green-dark);color:white;padding:14px 22px;border-radius:12px;font-size:14px;font-weight:500;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(10px);transition:all 0.3s;z-index:9999;pointer-events:none"></div>
+<script src="vendor/jspdf.umd.min.js"></script>
 <script src="js/app.js"></script>
 <script src="js/router.js"></script>
 </body>

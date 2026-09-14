@@ -3,7 +3,7 @@
           <div></div>
           <button class="btn-sm btn-green" onclick="openAddPetModal()" style="padding:10px 20px;font-size:14px">+ Cadastrar novo pet</button>
         </div>
-        <div class="pets-grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
+        <div class="pets-grid" id="pets-grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
           <div class="pet-card" onclick="showPetProfile('Thor')" style="padding:28px 20px">
             <div class="pet-avatar" style="background:var(--amber-light);width:80px;height:80px;font-size:40px">🐕<div class="status-dot ok"></div></div>
             <div class="pet-name" style="font-size:20px;margin-top:4px">Thor</div>
@@ -34,6 +34,7 @@
             <div class="pet-tags"><span class="tag tag-green">Saudável</span></div>
             <div style="margin-top:14px;font-size:12px;color:var(--text-light)">🔖 Microchip: —</div>
           </div>
+          <div id="registered-pets"></div>
           <div class="add-pet-card" onclick="openAddPetModal()">
             <div class="add-icon">➕</div>
             <span>Adicionar novo pet</span>
