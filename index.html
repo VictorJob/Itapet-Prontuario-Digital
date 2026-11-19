@@ -37,22 +37,15 @@
       <div id="login-form">
         <h2>Bem-vindo de volta! 👋</h2>
         <p class="subtitle">Entre com sua conta para acessar o painel</p>
-        <!-- Google -->
-        <button class="btn-google" onclick="enterApp('tutor')">
-          <svg width="18" height="18" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.8 2.4 30.2 0 24 0 14.7 0 6.7 5.5 2.7 13.6l7.9 6.1C12.5 13.3 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.6 28.3A14.8 14.8 0 0 1 9.5 24c0-1.5.2-2.9.6-4.3L2.2 13.6A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.9-6.4z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.2-7.7 2.2-6.2 0-11.5-4.2-13.4-9.8l-7.9 6.1C6.7 42.5 14.7 48 24 48z"/></svg>
-          Continuar com Google
-        </button>
-        <div class="or-divider"><span>ou entre com e-mail</span></div>
         <div class="form-group">
           <label>E-mail</label>
-          <input class="form-input" type="email" placeholder="seu@email.com">
+          <input id="login-email" class="form-input" type="email" placeholder="seu@email.com" autocomplete="email">
         </div>
         <div class="form-group">
           <label>Senha</label>
-          <input class="form-input" type="password" placeholder="••••••••">
+          <input id="login-password" class="form-input" type="password" placeholder="••••••••" autocomplete="current-password">
         </div>
-        <button class="btn-primary" onclick="enterApp('tutor')">Entrar como Tutor 🐶</button>
-        <button class="btn-primary" style="margin-top:10px;background:var(--purple)" onclick="enterApp('clinica')">Entrar como Clínica 🏥</button>
+        <button class="btn-primary" onclick="signInAccount()">Entrar</button>
       </div>
 
       <!-- REGISTER -->
@@ -69,18 +62,19 @@
             <span class="role-label">Clínica</span>
           </div>
         </div>
-        <button class="btn-google" onclick="enterApp('tutor')" style="margin-bottom:16px">
+        <!--
           <svg width="18" height="18" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.8 2.4 30.2 0 24 0 14.7 0 6.7 5.5 2.7 13.6l7.9 6.1C12.5 13.3 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.6 28.3A14.8 14.8 0 0 1 9.5 24c0-1.5.2-2.9.6-4.3L2.2 13.6A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.9-6.4z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.2-7.7 2.2-6.2 0-11.5-4.2-13.4-9.8l-7.9 6.1C6.7 42.5 14.7 48 24 48z"/></svg>
           Cadastrar com Google
-        </button>
-        <div class="or-divider"><span>ou cadastre com e-mail</span></div>
-        <div class="form-row">
-          <div class="form-group"><label>Nome</label><input class="form-input" placeholder="Seu nome"></div>
-          <div class="form-group"><label>Sobrenome</label><input class="form-input" placeholder="Sobrenome"></div>
-        </div>
-        <div class="form-group"><label>E-mail</label><input class="form-input" type="email" placeholder="seu@email.com"></div>
-        <div class="form-group"><label>Senha</label><input class="form-input" type="password" placeholder="Crie uma senha forte"></div>
-        <button class="btn-primary" onclick="enterApp('tutor')">Criar minha conta</button>
+        -->
+        <div class="form-group"><label id="register-name-label">Nome completo</label><input id="register-name" class="form-input" placeholder="Seu nome completo" autocomplete="name"></div>
+        <div class="form-group"><label>E-mail</label><input id="register-email" class="form-input" type="email" placeholder="seu@email.com" autocomplete="email"></div>
+        <div class="form-group"><label>Senha</label><input id="register-password" class="form-input" type="password" placeholder="Crie uma senha forte" autocomplete="new-password"></div>
+        <div class="form-group"><label>Confirme a senha</label><input id="register-password-confirm" class="form-input" type="password" placeholder="Digite a senha novamente" autocomplete="new-password"></div>
+        <div class="form-group"><label>Telefone</label><input id="register-phone" class="form-input" type="tel" placeholder="(11) 99999-9999"></div>
+        <div class="form-group register-clinic-field" style="display:none"><label>CNPJ *</label><input id="register-cnpj" class="form-input" placeholder="00.000.000/0000-00" inputmode="numeric" autocomplete="off"></div>
+        <div class="form-group register-clinic-field" style="display:none"><label>Endereço</label><input id="register-address" class="form-input" placeholder="Endereço da clínica"></div>
+        <div class="form-group register-clinic-field" style="display:none"><label>CEP</label><input id="register-cep" class="form-input" placeholder="00000-000"></div>
+        <button id="register-submit" class="btn-primary" onclick="registerAccount()">Criar minha conta</button>
       </div>
     </div>
   </div>
@@ -198,17 +192,17 @@
       <div class="modal-title">💉 Registrar Vacina</div>
       <button class="modal-close" onclick="closeModal('modal-vaccine')">✕</button>
     </div>
-    <div class="form-group"><label>Pet</label><select class="form-input"><option>🐕 Thor</option><option>🐱 Luna</option></select></div>
-    <div class="form-group"><label>Vacina *</label><select class="form-input"><option>V10 — Polivalente</option><option>Antirrábica</option><option>Giardíase</option><option>Bordetella</option><option>Outra</option></select></div>
+    <div class="form-group"><label>Pet</label>    <select id="vaccine-pet" class="form-input"></select></div>
+    <div class="form-group"><label>Vacina *</label><input id="vaccine-name" class="form-input" placeholder="Ex.: V10 — Polivalente"></div>
     <div class="form-row">
-      <div class="form-group"><label>Data de aplicação *</label><input type="date" class="form-input"></div>
-      <div class="form-group"><label>Próximo reforço</label><input type="date" class="form-input"></div>
+      <div class="form-group"><label>Data de aplicação *</label><input id="vaccine-date" type="date" class="form-input"></div>
+      <div class="form-group"><label>Próximo reforço</label><input id="vaccine-next-date" type="date" class="form-input"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>Veterinário</label><input class="form-input" placeholder="Nome do vet."></div>
-      <div class="form-group"><label>Lote</label><input class="form-input" placeholder="Nº do lote"></div>
+      <div class="form-group"><label>Veterinário</label><input id="vaccine-vet" class="form-input" placeholder="Nome do vet."></div>
+      <div class="form-group"><label>Lote</label><input id="vaccine-lot" class="form-input" placeholder="Nº do lote"></div>
     </div>
-    <div class="form-group"><label>Observações</label><textarea class="form-input" rows="2"></textarea></div>
+    <div class="form-group"><label>Observações</label><textarea id="vaccine-notes" class="form-input" rows="2"></textarea></div>
     <button class="btn-primary" onclick="saveVaccine()">Registrar vacina 💉</button>
   </div>
 </div>
@@ -217,20 +211,21 @@
 <div class="modal-overlay" id="modal-consulta">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">📋 Registrar Consulta</div>
+      <div class="modal-title">📋 Registrar atendimento</div>
       <button class="modal-close" onclick="closeModal('modal-consulta')">✕</button>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>Pet</label><select class="form-input"><option>🐕 Thor</option><option>🐱 Luna</option></select></div>
-      <div class="form-group"><label>Data</label><input type="date" class="form-input"></div>
+      <div class="form-group"><label>Pet</label><select id="consulta-pet" class="form-input"></select></div>
+      <div class="form-group"><label>Data</label><input id="consulta-date" type="date" class="form-input"></div>
     </div>
-    <div class="form-group"><label>Veterinário</label><input class="form-input" placeholder="Dr. Nome"></div>
-    <div class="form-group"><label>Clínica</label><input class="form-input" placeholder="Nome da clínica"></div>
-    <div class="form-group"><label>Diagnóstico / Motivo</label><input class="form-input" placeholder="Ex: Check-up, otite..."></div>
-    <div class="form-group"><label>Sintomas observados</label><textarea class="form-input" rows="2" placeholder="Descreva os sintomas..."></textarea></div>
-    <div class="form-group"><label>Tratamento / Prescrição</label><textarea class="form-input" rows="2" placeholder="Medicamentos, procedimentos..."></textarea></div>
-    <div class="form-group"><label>Peso na consulta (kg)</label><input type="number" class="form-input" placeholder="Ex: 28.5" step="0.1"></div>
-    <button class="btn-primary" onclick="saveConsulta()">Salvar consulta 📋</button>
+    <div class="form-group"><label>Tipo de registro</label><select id="consulta-type" class="form-input"><option value="consulta">Consulta</option><option value="procedimento">Procedimento</option><option value="tratamento">Tratamento</option></select></div>
+    <div class="form-group"><label>Veterinário</label><input id="consulta-vet" class="form-input" placeholder="Dr. Nome"></div>
+    <div class="form-group"><label>Clínica</label><input id="consulta-clinic" class="form-input" placeholder="Nome da clínica"></div>
+    <div class="form-group"><label>Descrição / Motivo</label><input id="consulta-reason" class="form-input" placeholder="Ex: Check-up, exame, tratamento..."></div>
+    <div class="form-group"><label>Sintomas observados</label><textarea id="consulta-symptoms" class="form-input" rows="2" placeholder="Descreva os sintomas..."></textarea></div>
+    <div class="form-group"><label>Tratamento / Prescrição</label><textarea id="consulta-treatment" class="form-input" rows="2" placeholder="Medicamentos, procedimentos..."></textarea></div>
+    <div class="form-group"><label>Peso na consulta (kg)</label><input id="consulta-weight" type="number" class="form-input" placeholder="Ex: 28.5" step="0.1"></div>
+    <button class="btn-primary" onclick="saveConsulta()">Salvar no prontuário 📋</button>
   </div>
 </div>
 
@@ -241,9 +236,7 @@
       <div class="modal-title">🔔 Notificações</div>
       <button class="modal-close" onclick="closeModal('modal-notif')">✕</button>
     </div>
-    <div class="notif-item"><div class="notif-icon" style="background:var(--coral-light)">💉</div><div class="notif-text"><div class="notif-title">Vacina da Luna vencida</div><div class="notif-desc">V10 — Agende a vacinação</div></div></div>
-    <div class="notif-item"><div class="notif-icon" style="background:var(--amber-light)">📅</div><div class="notif-text"><div class="notif-title">Consulta do Thor amanhã</div><div class="notif-desc">Dr. Pedro — 25/04 às 14:00</div></div></div>
-    <div class="notif-item"><div class="notif-icon" style="background:var(--green-pale)">💊</div><div class="notif-text"><div class="notif-title">Medicamento do Thor</div><div class="notif-desc">Vermífugo — Hoje às 20:00</div></div></div>
+    <div id="notification-list"></div>
   </div>
 </div>
 
@@ -256,12 +249,12 @@
       <button class="modal-close" onclick="closeModal('modal-vet')">×</button>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>Nome completo *</label><input class="form-input" placeholder="Dr(a). Nome Sobrenome"></div>
-      <div class="form-group"><label>CRMV *</label><input class="form-input" placeholder="CRMV-SP 00000"></div>
+      <div class="form-group"><label>Nome completo *</label><input id="vet-name" class="form-input" placeholder="Dr(a). Nome Sobrenome"></div>
+      <div class="form-group"><label>CRMV *</label><input id="vet-crmv" class="form-input" placeholder="CRMV-SP 00000"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>E-mail *</label><input class="form-input" type="email" placeholder="vet@clinica.com"></div>
-      <div class="form-group"><label>Especialidade</label><input class="form-input" placeholder="Clínica geral, dermato..."></div>
+      <div class="form-group"><label>E-mail *</label><input id="vet-email" class="form-input" type="email" placeholder="vet@clinica.com"></div>
+      <div class="form-group"><label>Especialidade</label><input id="vet-specialty" class="form-input" placeholder="Clínica geral, dermato..."></div>
     </div>
     <button class="btn-primary" onclick="saveVet()">Cadastrar veterinário</button>
   </div>
@@ -270,6 +263,9 @@
 <div id="popup-notif-stack"></div>
 
 <div id="toast" style="position:fixed;bottom:32px;right:32px;background:var(--green-dark);color:white;padding:14px 22px;border-radius:12px;font-size:14px;font-weight:500;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(10px);transition:all 0.3s;z-index:9999;pointer-events:none"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase.js"></script>
 <script src="vendor/jspdf.umd.min.js"></script>
 <script src="js/app.js"></script>
 <script src="js/router.js"></script>

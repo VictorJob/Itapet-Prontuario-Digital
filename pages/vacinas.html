@@ -3,16 +3,15 @@
           <div class="card-header">
             <div class="card-title-icon">
               <div class="title-icon" style="background:var(--amber-light)">💉</div>
-              <span class="card-title">Carteira de Vacinação — Thor</span>
+              <span class="card-title" id="vaccine-title">Carteira de Vacinação</span>
             </div>
             <div style="display:flex;gap:8px">
-              <select class="form-input" style="width:auto;padding:8px 12px;font-size:13px">
-                <option>🐕 Thor</option><option>🐱 Luna</option><option>🐰 Pipoca</option>
+              <select id="vaccine-filter" class="form-input" style="width:auto;padding:8px 12px;font-size:13px" onchange="selectVaccinePet()">
               </select>
               <button class="btn-sm btn-green" data-role-vet-only data-role-clinica-only onclick="openVaccineModal()">+ Registrar Vacina</button>
             </div>
           </div>
-          <div class="vaccine-grid">
+          <div class="vaccine-grid" id="vaccine-list">
             <div class="vaccine-item">
               <div class="vax-icon" style="background:var(--green-pale)">💉</div>
               <div class="vax-info">
@@ -40,24 +39,6 @@
           </div>
         </div>
 
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title-icon">
-              <div class="title-icon" style="background:var(--coral-light)">🚨</div>
-              <span class="card-title">Alertas — Luna</span>
-            </div>
-          </div>
-          <div class="vaccine-grid">
-            <div class="vaccine-item" style="border-color:var(--coral)">
-              <div class="vax-icon" style="background:var(--coral-light)">💉</div>
-              <div class="vax-info">
-                <div class="vax-name">V10 — Polivalente</div>
-                <div class="vax-date">Venceu: 12/04/2025 · Há 8 dias</div>
-              </div>
-              <span class="vax-status vax-expired">❌ Vencida</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- ===== CONSULTAS ===== -->

@@ -4,7 +4,7 @@
             <span class="card-title">Veterinários cadastrados</span>
             <button class="btn-sm btn-green" onclick="openVetModal()">+ Cadastrar Veterinário</button>
           </div>
-          <div class="file-list">
+          <div class="file-list" id="veterinarian-list">
             <div class="file-item">
               <div class="file-icon" style="background:var(--sky-light);color:var(--sky)">🩺</div>
               <div class="file-info"><div class="file-name">Dr. Pedro Alves</div><div class="file-meta">CRMV-SP 12345 · Clínica geral</div></div>
@@ -19,17 +19,7 @@
         </div>
 
         <div class="card">
-          <div class="card-header"><span class="card-title">Solicitações de reserva pendentes</span></div>
-          <div class="appointment-item">
-            <div class="appt-date"><div class="day">!</div><div class="month">Nova</div></div>
-            <div class="appt-info">
-              <div class="appt-title">Maria Silva — 🐕 Thor</div>
-              <div class="appt-details">Consulta de rotina · Preferência: tarde</div>
-              <div style="display:flex;gap:6px;margin-top:8px">
-                <button class="btn-sm btn-green" onclick="showToast('Datas propostas enviadas ao tutor 📨')">Propor datas</button>
-                <button class="btn-sm btn-outline" onclick="showToast('Solicitação recusada')">Recusar</button>
-              </div>
-            </div>
-          </div>
+          <div class="card-header"><span class="card-title">Consultas agendadas</span></div>
+          <div id="clinic-appointments"></div>
         </div>
       </div>

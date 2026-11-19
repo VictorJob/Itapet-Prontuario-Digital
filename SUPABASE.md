@@ -1,0 +1,12 @@
+# Configuração do Supabase
+
+1. No Supabase, abra **SQL Editor**, execute `supabase-schema.sql` e confira que não houve erro. O script cria/estende as tabelas do diagrama, ativa RLS, cria o bucket privado de documentos e configura políticas para tutores e clínicas associadas aos pets.
+2. No painel **Project Settings → API**, copie a **Project URL** e a chave **anon/public** para `js/supabase-config.js`. Nunca coloque a `service_role` no navegador nem faça commit de chaves privadas.
+3. Em **Authentication → URL Configuration**, configure a URL do site publicado e, para desenvolvimento, a URL local. Se a confirmação de e-mail estiver ativa, confirme o e-mail antes de entrar.
+4. Sirva o projeto por HTTP (por exemplo, Live Server ou hospedagem estática); não abra `index.html` diretamente como `file://`.
+
+O login e cadastro usam Supabase Auth com e-mail e senha; o perfil de tutor ou clínica é identificado pelo cadastro, sem uma escolha adicional na tela de login. O cadastro confirma a senha e exige CNPJ de 14 dígitos para clínicas. As tabelas `tutor` e `clinica` guardam somente os dados de perfil e `auth_user_id`; a senha é gerenciada pelo Auth, nunca gravada nas colunas legadas `senha`. O SQL limpa as senhas legadas em texto simples e torna essas colunas opcionais. Se a base já contém contas, os usuários devem redefinir a senha no fluxo de Auth antes de usar este login.
+
+Os registros de vacinação, consultas, procedimentos e tratamentos são salvos em `historico` com o campo `tipo`; os registros incluem `nome_clinica`, preenchido automaticamente para perfis de clínica; consultas futuras usam `lembrete`; pesos vão para `pet_peso`; documentos são enviados ao bucket privado e indexados em `documentos`. Execute o SQL atualizado para adicionar `nome_clinica` em bases já existentes. O código do pet (`codigo`) e o microchip são colunas adicionais ao diagrama. Uma clínica só vê pets vinculados em `clinicas_e_pets`; até existir um fluxo de consentimento/convite no produto, associe as clínicas autorizadas nessa tabela pelo SQL Editor (com `cod_clinica` e `cod_pet`). Sem esse vínculo, a RLS corretamente não mostra o paciente para a clínica.
+
+Para criar uma conta de clínica, preencha os dados e confirme o e-mail conforme a configuração de Auth. Os campos da tabela da imagem que não são preenchidos pelo aplicativo permanecem opcionais; revise restrições `NOT NULL` preexistentes antes de migrar uma base com esquema diferente.

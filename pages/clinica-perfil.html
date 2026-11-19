@@ -2,15 +2,18 @@
         <div class="card" style="margin-bottom:20px">
           <div class="card-header"><span class="card-title">Dados da Clínica</span></div>
           <div class="form-row">
-            <div class="form-group"><label>Razão Social</label><input class="form-input" value="ClínicaPet Saúde Animal LTDA"></div>
-            <div class="form-group"><label>CNPJ</label><input class="form-input" value="12.345.678/0001-90"></div>
+            <div class="form-group"><label>Razão Social</label><input id="clinic-name" class="form-input"></div>
+            <div class="form-group"><label>CNPJ</label><input id="clinic-cnpj" class="form-input"></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label>Telefone</label><input class="form-input" value="(11) 4002-8922"></div>
-            <div class="form-group"><label>E-mail</label><input class="form-input" value="contato@clinicapet.com"></div>
+            <div class="form-group"><label>Telefone</label><input id="clinic-phone" class="form-input"></div>
+            <div class="form-group"><label>E-mail</label><input id="clinic-email" class="form-input" readonly></div>
           </div>
-          <div class="form-group"><label>Endereço</label><input class="form-input" value="Av. Paulista, 1000 — São Paulo/SP"></div>
-          <button class="btn-primary" onclick="showToast('Dados da clínica atualizados! 🏥')">Salvar alterações</button>
+          <div class="form-row">
+            <div class="form-group"><label>Endereço</label><input id="clinic-address" class="form-input"></div>
+            <div class="form-group"><label>CEP</label><input id="clinic-cep" class="form-input"></div>
+          </div>
+          <button class="btn-primary" onclick="saveClinicProfile()">Salvar alterações</button>
         </div>
       </div>
 

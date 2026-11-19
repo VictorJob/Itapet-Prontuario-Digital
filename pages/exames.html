@@ -7,13 +7,11 @@
               </div>
               <div class="form-group">
                 <label>Pet</label>
-                <select class="form-input">
-                  <option>🐕 Thor</option><option>🐱 Luna</option>
-                </select>
+                <select id="document-pet" class="form-input"></select>
               </div>
               <div class="form-group">
                 <label>Tipo</label>
-                <select class="form-input">
+                <select id="document-type" class="form-input">
                   <option>Exame laboratorial</option><option>Raio-X / Imagem</option>
                   <option>Receita médica</option><option>Laudo</option><option>Outro</option>
                 </select>
@@ -24,16 +22,16 @@
                 <span>PDF, JPG, PNG — até 20MB</span>
               </div>
               <input type="file" id="file-input" style="display:none" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(event)">
-              <button class="btn-primary" onclick="showToast('Arquivo enviado com sucesso! 📂')">Enviar documento</button>
+              <button class="btn-primary" onclick="uploadDocuments()">Enviar documento</button>
             </div>
           </div>
 
           <div class="card">
             <div class="card-header">
               <span class="card-title" data-exames-list-title>Documentos Salvos</span>
-              <span class="tag tag-green" style="font-size:11px">12 arquivos</span>
+              <span class="tag tag-green" id="document-count" style="font-size:11px">0 arquivos</span>
             </div>
-            <div class="file-list">
+            <div class="file-list" id="document-list">
               <div class="file-item">
                 <div class="file-icon" style="background:#FFE4E4;color:#E53E3E">📄</div>
                 <div class="file-info"><div class="file-name">Hemograma_Thor_04-2025.pdf</div><div class="file-meta">PDF · 1.2MB · 10/04/2025</div></div>

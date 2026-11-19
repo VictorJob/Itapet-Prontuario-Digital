@@ -17,13 +17,7 @@ async function loadPage(name) {
   if (typeof applyRoleVisibility === 'function' && typeof currentRole !== 'undefined') {
     applyRoleVisibility();
   }
-  // Dashboard chart needs its canvas to exist
-  if (name === 'dashboard' && typeof buildWeightChart === 'function') {
-    buildWeightChart();
-  }
-  if (name === 'pets' && typeof renderSavedPets === 'function') {
-    renderSavedPets();
-  }
+  if (typeof renderLoadedView === 'function') renderLoadedView(name);
 }
 
 const _activateView = showView;

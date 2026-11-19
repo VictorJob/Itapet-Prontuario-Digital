@@ -1,6 +1,6 @@
       <div class="view" id="view-medicamentos">
         <div class="grid-2">
-          <div>
+          <div id="medication-list">
             <div class="prescription-card">
               <div class="rx-name">Panacur® — Vermífugo</div>
               <div class="rx-dose">Fenbendazol 150mg · 🐕 Thor</div>
@@ -25,18 +25,18 @@
             <div class="card-header">
               <span class="card-title">Adicionar Medicamento</span>
             </div>
-            <div class="form-group"><label>Pet</label><select class="form-input"><option>🐕 Thor</option><option>🐱 Luna</option></select></div>
-            <div class="form-group"><label>Nome do medicamento</label><input class="form-input" placeholder="Ex: Bravecto, Simparica..."></div>
+            <div class="form-group"><label>Pet</label><select id="medication-pet" class="form-input"></select></div>
+            <div class="form-group"><label>Nome do medicamento</label><input id="medication-name" class="form-input" placeholder="Ex: Bravecto, Simparica..."></div>
             <div class="form-row">
-              <div class="form-group"><label>Dosagem</label><input class="form-input" placeholder="Ex: 1 comprimido"></div>
-              <div class="form-group"><label>Frequência</label><select class="form-input"><option>1x ao dia</option><option>2x ao dia</option><option>3x ao dia</option><option>Semanal</option><option>Mensal</option></select></div>
+              <div class="form-group"><label>Dosagem</label><input id="medication-dose" class="form-input" placeholder="Ex: 1 comprimido"></div>
+              <div class="form-group"><label>Frequência</label><select id="medication-frequency" class="form-input"><option>1x ao dia</option><option>2x ao dia</option><option>3x ao dia</option><option>Semanal</option><option>Mensal</option></select></div>
             </div>
             <div class="form-row">
-              <div class="form-group"><label>Início</label><input type="date" class="form-input"></div>
-              <div class="form-group"><label>Duração (dias)</label><input type="number" class="form-input" placeholder="Ex: 10"></div>
+              <div class="form-group"><label>Início</label><input id="medication-date" type="date" class="form-input"></div>
+              <div class="form-group"><label>Duração (dias)</label><input id="medication-duration" type="number" class="form-input" placeholder="Ex: 10"></div>
             </div>
-            <div class="form-group"><label>Observações</label><textarea class="form-input" rows="2" placeholder="Administrar com alimento..."></textarea></div>
-            <button class="btn-primary" onclick="showToast('Medicamento registrado! 💊')">Salvar medicamento</button>
+            <div class="form-group"><label>Observações</label><textarea id="medication-notes" class="form-input" rows="2" placeholder="Administrar com alimento..."></textarea></div>
+            <button class="btn-primary" onclick="saveMedication()">Salvar medicamento</button>
           </div>
         </div>
       </div>

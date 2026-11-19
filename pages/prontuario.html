@@ -4,11 +4,7 @@
           <div class="profile-info">
             <h2>Thor</h2>
             <p>Golden Retriever · Macho · 3 anos · 28kg</p>
-            <div class="profile-chips">
-              <span class="profile-chip">🔖 #12345678</span>
-              <span class="profile-chip">👤 Tutor: Maria Silva</span>
-              <span class="profile-chip">🩺 Dr. Pedro Alves</span>
-            </div>
+            <div class="profile-chips" id="pet-profile-chips"></div>
           </div>
           <div style="margin-left:auto;text-align:center">
             <div class="health-ring">
@@ -16,7 +12,7 @@
                 <circle cx="45" cy="45" r="38" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="7"/>
                 <circle cx="45" cy="45" r="38" fill="none" stroke="var(--amber)" stroke-width="7" stroke-dasharray="220" stroke-dashoffset="44" stroke-linecap="round"/>
               </svg>
-              <span class="score" style="color:white">80</span>
+              <span class="score" style="color:white">—</span>
             </div>
             <div style="color:rgba(255,255,255,0.7);font-size:12px;margin-top:4px">Score de Saúde</div>
           </div>
@@ -32,7 +28,7 @@
           <div class="card">
             <div class="card-header">
               <span class="card-title">Histórico de Consultas</span>
-              <button class="btn-sm btn-green" onclick="openConsultaModal()">+ Nova Consulta</button>
+              <button class="btn-sm btn-green" onclick="openConsultaModal()">+ Novo registro</button>
             </div>
             <div class="timeline">
               <div class="timeline-item">
@@ -74,7 +70,7 @@
         <div id="tab-diagnosticos" class="tab-panel">
           <div class="card">
             <div class="card-header"><span class="card-title">Diagnósticos Registrados</span></div>
-            <div class="vaccine-grid">
+            <div class="vaccine-grid" id="diagnostic-list">
               <div class="vaccine-item">
                 <div class="vax-icon" style="background:var(--green-pale)">✅</div>
                 <div class="vax-info"><div class="vax-name">Saudável — Check-up Anual</div><div class="vax-date">12/04/2025 · Dr. Pedro Alves</div></div>
@@ -91,8 +87,8 @@
 
         <div id="tab-procedimentos" class="tab-panel">
           <div class="card">
-            <div class="card-header"><span class="card-title">Procedimentos Realizados</span></div>
-            <div class="vaccine-grid">
+            <div class="card-header"><span class="card-title">Procedimentos e tratamentos</span></div>
+            <div class="vaccine-grid" id="procedure-list">
               <div class="vaccine-item">
                 <div class="vax-icon" style="background:var(--amber-light)">🔬</div>
                 <div class="vax-info"><div class="vax-name">Hemograma Completo</div><div class="vax-date">10/04/2025</div></div>

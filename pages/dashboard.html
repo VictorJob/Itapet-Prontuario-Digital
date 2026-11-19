@@ -2,27 +2,27 @@
         <div class="stats-grid">
           <div class="stat-card green">
             <div class="stat-icon">🐾</div>
-            <div class="stat-value">3</div>
+            <div class="stat-value" data-stat="pets">0</div>
             <div class="stat-label">Pets cadastrados</div>
-            <div class="stat-trend trend-up">↑ 1 novo este mês</div>
+            <div class="stat-trend trend-up" data-stat-detail="pets"></div>
           </div>
           <div class="stat-card coral">
             <div class="stat-icon">💉</div>
-            <div class="stat-value">2</div>
+            <div class="stat-value" data-stat="vaccines">0</div>
             <div class="stat-label">Vacinas vencendo</div>
-            <div class="stat-trend trend-warn">⚠ Atenção necessária</div>
+            <div class="stat-trend trend-warn" data-stat-detail="vaccines"></div>
           </div>
           <div class="stat-card amber">
             <div class="stat-icon">📅</div>
-            <div class="stat-value">1</div>
+            <div class="stat-value" data-stat="appointments">0</div>
             <div class="stat-label">Consulta agendada</div>
-            <div class="stat-trend trend-up">✓ Próxima: 25/04</div>
+            <div class="stat-trend trend-up" data-stat-detail="appointments"></div>
           </div>
           <div class="stat-card sky">
             <div class="stat-icon">📁</div>
-            <div class="stat-value">12</div>
+            <div class="stat-value" data-stat="documents">0</div>
             <div class="stat-label">Documentos salvos</div>
-            <div class="stat-trend trend-up">↑ 3 novos</div>
+            <div class="stat-trend trend-up" data-stat-detail="documents"></div>
           </div>
         </div>
 
@@ -34,129 +34,25 @@
                 <div class="title-icon" style="background:var(--green-pale)">🐶</div>
                 <span class="card-title">Meus Pets</span>
               </div>
-              <button class="btn-sm btn-green" onclick="openAddPetModal()">+ Adicionar Pet</button>
+              <button class="btn-sm btn-green" data-role-tutor-only onclick="openAddPetModal()">+ Adicionar Pet</button>
             </div>
-            <div class="pets-grid">
-              <div class="pet-card" onclick="showPetProfile('Thor')">
-                <div class="pet-avatar" style="background:var(--amber-light)">🐕<div class="status-dot ok"></div></div>
-                <div class="pet-name">Thor</div>
-                <div class="pet-breed">Golden Retriever • 3 anos</div>
-                <div class="pet-tags"><span class="tag tag-green">Saudável</span><span class="tag tag-amber">Vacina em breve</span></div>
-              </div>
-              <div class="pet-card" onclick="showPetProfile('Luna')">
-                <div class="pet-avatar" style="background:var(--sky-light)">🐱<div class="status-dot warn"></div></div>
-                <div class="pet-name">Luna</div>
-                <div class="pet-breed">SRD Gata • 2 anos</div>
-                <div class="pet-tags"><span class="tag tag-coral">Vacina vencida</span><span class="tag tag-sky">Castrada</span></div>
-              </div>
-              <div class="pet-card" onclick="showPetProfile('Pipoca')">
-                <div class="pet-avatar" style="background:var(--purple-light)">🐰<div class="status-dot ok"></div></div>
-                <div class="pet-name">Pipoca</div>
-                <div class="pet-breed">Coelho • 1 ano</div>
-                <div class="pet-tags"><span class="tag tag-green">Saudável</span></div>
-              </div>
-              <div class="add-pet-card" onclick="openAddPetModal()">
-                <div class="add-icon">➕</div>
-                <span>Adicionar novo pet</span>
-              </div>
-            </div>
+            <div class="pets-grid" id="dashboard-pets"></div>
           </div>
 
-          <!-- Notifications -->
           <div class="card">
-            <div class="card-header">
-              <div class="card-title-icon">
-                <div class="title-icon" style="background:var(--coral-light)">🔔</div>
-                <span class="card-title">Alertas</span>
-              </div>
-            </div>
-            <div class="notif-item">
-              <div class="notif-icon" style="background:var(--coral-light)">💉</div>
-              <div class="notif-text">
-                <div class="notif-title">Vacina da Luna vencida</div>
-                <div class="notif-desc">V10 — Venceu há 7 dias</div>
-              </div>
-              <span class="notif-time">Hoje</span>
-            </div>
-            <div class="notif-item">
-              <div class="notif-icon" style="background:var(--amber-light)">📅</div>
-              <div class="notif-text">
-                <div class="notif-title">Consulta do Thor amanhã</div>
-                <div class="notif-desc">Dr. Pedro — 14:00</div>
-              </div>
-              <span class="notif-time">Amanhã</span>
-            </div>
-            <div class="notif-item">
-              <div class="notif-icon" style="background:var(--green-pale)">💊</div>
-              <div class="notif-text">
-                <div class="notif-title">Medicamento do Thor</div>
-                <div class="notif-desc">Vermífugo — Hoje às 20h</div>
-              </div>
-              <span class="notif-time">20:00</span>
-            </div>
+            <div class="card-header"><span class="card-title">🔔 Alertas</span></div>
+            <div id="dashboard-alerts"></div>
           </div>
-
-          <!-- Upcoming appointments -->
           <div class="card span-2">
             <div class="card-header">
-              <div class="card-title-icon">
-                <div class="title-icon" style="background:var(--sky-light)">📅</div>
-                <span class="card-title">Próximas Consultas</span>
-              </div>
+              <span class="card-title">📅 Próximas Consultas</span>
               <button class="btn-sm btn-outline" onclick="showView('consultas',null)">Ver todas</button>
             </div>
-            <div class="appointment-item">
-              <div class="appt-date"><div class="day">25</div><div class="month">Abr</div></div>
-              <div class="appt-info">
-                <div class="appt-title">Consulta de rotina</div>
-                <div class="appt-details">🏥 ClínicaPet Centro · Dr. Pedro Alves</div>
-              </div>
-              <div class="appt-time">14:00<span class="pet-name-small">🐕 Thor</span></div>
-            </div>
-            <div class="appointment-item">
-              <div class="appt-date"><div class="day">02</div><div class="month">Mai</div></div>
-              <div class="appt-info">
-                <div class="appt-title">Vacinação — V10</div>
-                <div class="appt-details">🏥 VetBem · Dr.ª Ana Costa</div>
-              </div>
-              <div class="appt-time">10:30<span class="pet-name-small">🐱 Luna</span></div>
-            </div>
+            <div id="dashboard-appointments"></div>
           </div>
-
-          <!-- Recent Activity -->
           <div class="card">
-            <div class="card-header">
-              <div class="card-title-icon">
-                <div class="title-icon" style="background:var(--purple-light)">📋</div>
-                <span class="card-title">Atividade Recente</span>
-              </div>
-            </div>
-            <div class="timeline">
-              <div class="timeline-item">
-                <div class="timeline-dot" style="background:var(--green-pale)">📋</div>
-                <div class="timeline-content">
-                  <div class="timeline-date">12/04/2025</div>
-                  <div class="timeline-title">Consulta realizada — Thor</div>
-                  <div class="timeline-desc">Check-up anual. Dr. Pedro Alves.</div>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot" style="background:var(--amber-light)">🧪</div>
-                <div class="timeline-content">
-                  <div class="timeline-date">10/04/2025</div>
-                  <div class="timeline-title">Exame de sangue — Luna</div>
-                  <div class="timeline-desc">Hemograma completo</div>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot" style="background:var(--sky-light)">💉</div>
-                <div class="timeline-content">
-                  <div class="timeline-date">05/03/2025</div>
-                  <div class="timeline-title">Vacina aplicada — Thor</div>
-                  <div class="timeline-desc">Antirrábica — válida até 03/2026</div>
-                </div>
-              </div>
-            </div>
+            <div class="card-header"><span class="card-title">📋 Atividade Recente</span></div>
+            <div class="timeline" id="dashboard-activity"></div>
           </div>
         </div>
       </div>
