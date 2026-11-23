@@ -69,10 +69,14 @@ valida o formato, mostra mensagens para código inexistente/duplicado e permite 
 tutor copiar o código exibido no cartão do pet.
 
 `clinicas_e_pets` é a fonte oficial do vínculo entre clínica e pet. A RPC de vínculo
-insere nessa tabela usando `(cod_clinica, cod_pet)`, e a política RLS de `pet` só
-permite que uma clínica consulte pets que tenham uma linha correspondente nessa
-tabela. A tela pode consultar `pet` diretamente porque o filtro é aplicado pelo
-RLS no banco; não existe vínculo automático apenas por abrir a tela de pacientes.
+insere nessa tabela usando `(cod_clinica, cod_pet)`, a RPC de desvinculação remove
+somente o vínculo da clínica autenticada e a política RLS de `pet` só permite que
+uma clínica consulte pets que tenham uma linha correspondente nessa tabela. A tela
+pode consultar `pet` diretamente porque o filtro é aplicado pelo RLS no banco; não
+existe vínculo automático apenas por abrir a tela de pacientes.
+
+A mesma regra é aplicada ao Storage: a clínica vinculada pode gerar URLs assinadas
+para as fotos privadas dos pets que aparecem em sua lista de pacientes.
 
 O salvamento de um novo registro clínico usa a RPC
 `itapet_create_history_with_weight`, que grava `historico` e, quando informado,
@@ -81,5 +85,6 @@ que uma nova tentativa após timeout não crie uma consulta duplicada.
 
 Antes de publicar esta versão, execute uma vez o script
 `sql/2026-11-23-corrigir-vinculo-e-historico.sql` no SQL Editor do Supabase. Ele
-cria as duas RPCs, adiciona os índices necessários e recria as políticas RLS de
-`clinicas_e_pets`, `historico` e `pet_peso` sem desativar o RLS.
+cria as três RPCs, adiciona os índices necessários e recria as políticas RLS de
+`pet`, `clinicas_e_pets`, `historico` e `pet_peso`, além da leitura segura das fotos
+privadas no Storage, sem desativar o RLS.

@@ -137,6 +137,44 @@ $$;
 revoke all on function public.itapet_link_pet_by_code(text) from public, anon;
 grant execute on function public.itapet_link_pet_by_code(text) to authenticated;
 
+/* RPC de desvinculação: somente a clínica dona do vínculo pode removê-lo. */
+create or replace function public.itapet_unlink_pet(_cod_pet integer)
+returns boolean
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_uid uuid := auth.uid();
+  v_clinica_cod integer;
+begin
+  select c.cod
+    into v_clinica_cod
+    from public.clinica c
+   where c.auth_user_id = v_uid
+   limit 1;
+
+  if v_clinica_cod is null then
+    raise exception '[ITAPET_NOT_CLINIC] Apenas clínicas podem desvincular pacientes.'
+      using errcode = 'P0001';
+  end if;
+
+  delete from public.clinicas_e_pets
+   where cod_clinica = v_clinica_cod
+     and cod_pet = _cod_pet;
+
+  if not found then
+    raise exception '[ITAPET_LINK_NOT_FOUND] Este pet não está vinculado a esta clínica.'
+      using errcode = 'P0001';
+  end if;
+
+  return true;
+end;
+$$;
+
+revoke all on function public.itapet_unlink_pet(integer) from public, anon;
+grant execute on function public.itapet_unlink_pet(integer) to authenticated;
+
 /* --------------------------------------------------------------------------
    3. RPC transacional: historico e peso na mesma transação
    -------------------------------------------------------------------------- */
@@ -418,6 +456,38 @@ create policy "itapet_clinics_delete_pet_links" on public.clinicas_e_pets
       select 1 from public.clinica c
        where c.cod = clinicas_e_pets.cod_clinica
          and c.auth_user_id = (select auth.uid())
+    )
+  );
+
+/* Fotos privadas: a clínica vinculada pode gerar a URL assinada do pet. */
+drop policy if exists "itapet_participants_read_pet_photos" on storage.objects;
+create policy "itapet_participants_read_pet_photos" on storage.objects
+  for select to authenticated
+  using (
+    bucket_id = 'itapet-pet-photos'
+    and (storage.foldername(name))[1] = 'pets'
+    and exists (
+      select 1
+        from public.pet p
+       where p.cod = case
+         when (storage.foldername(name))[2] ~ '^[0-9]+$'
+         then ((storage.foldername(name))[2])::integer
+         else null
+       end
+         and (
+           exists (
+             select 1 from public.tutor t
+              where t.cod = p.cod_tutor
+                and t.auth_user_id = (select auth.uid())
+           )
+           or exists (
+             select 1
+               from public.clinicas_e_pets cp
+               join public.clinica c on c.cod = cp.cod_clinica
+              where cp.cod_pet = p.cod
+                and c.auth_user_id = (select auth.uid())
+           )
+         )
     )
   );
 

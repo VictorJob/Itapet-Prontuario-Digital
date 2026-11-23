@@ -281,8 +281,27 @@ window.Itapet = window.Itapet || {};
     }
     return history;
   };
-  db.unlinkPet = (clinicCod, petCod) =>
-    result(sb.from("clinicas_e_pets").delete().eq("cod_clinica", clinicCod).eq("cod_pet", petCod).select("cod_clinica, cod_pet"));
+  db.unlinkPet = async (clinicCod, petCod) => {
+    try {
+      const linked = await result(sb.rpc("itapet_unlink_pet", { _cod_pet: petCod }));
+      if (linked !== true) throw new Error("O banco não confirmou a remoção do vínculo.");
+      return linked;
+    } catch (error) {
+      const missingRpc = error && (
+        error.code === "PGRST202" ||
+        /could not find the function|function .* does not exist|schema cache/i.test(error.message || "")
+      );
+      if (!missingRpc) throw error;
+      return result(
+        sb.from("clinicas_e_pets")
+          .delete()
+          .eq("cod_clinica", clinicCod)
+          .eq("cod_pet", petCod)
+          .select("cod_clinica, cod_pet")
+          .single(),
+      );
+    }
+  };
 
   db.uploadDocument = async (file, petCod, userId, type) => {
     const path = "pets/" + petCod + "/" + userId + "/" + Date.now() + "-" + R.safeFileName(file.name);
@@ -321,6 +340,7 @@ window.Itapet = window.Itapet || {};
     if (/\[ITAPET_PET_NOT_FOUND\]/i.test(msg)) return "Nenhum pet foi encontrado com esse código.";
     if (/\[ITAPET_DUPLICATE_PET_CODE\]/i.test(msg)) return "Esse código está duplicado no cadastro. Corrija os pets duplicados no Supabase.";
     if (/\[ITAPET_ALREADY_LINKED\]/i.test(msg)) return "Este pet já está vinculado a esta clínica.";
+    if (/\[ITAPET_LINK_NOT_FOUND\]/i.test(msg)) return "Este pet não está vinculado a esta clínica.";
     if (/\[ITAPET_HISTORY_ACCESS\]/i.test(msg)) return "Você não tem permissão para registrar informações neste pet.";
     if (/\[ITAPET_HISTORY_INVALID\]/i.test(msg)) return "Confira a data, o diagnóstico e o peso informado.";
     if (code === "ITAPET_INVALID_RPC_RETURN" || code === "ITAPET_INVALID_HISTORY_RETURN")
