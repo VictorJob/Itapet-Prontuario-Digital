@@ -224,7 +224,7 @@ window.Itapet = window.Itapet || {};
     return petCod;
   };
   db.createHistoryWithWeight = async (row, weight, requestId) => {
-    const data = await result(sb.rpc("itapet_create_history_with_weight", {
+    const args = {
       _cod_pet: row.cod_pet,
       _cod_veterinario: row.cod_veterinario || null,
       _tipo: row.tipo || null,
@@ -235,7 +235,44 @@ window.Itapet = window.Itapet || {};
       _peso: weight > 0 ? weight : null,
       _data: row.data,
       _request_id: requestId || null,
-    }));
+    };
+    let data;
+    try {
+      data = await result(sb.rpc("itapet_create_history_with_weight", args));
+    } catch (error) {
+      /*
+       * Compatibilidade para instalações que ainda não executaram a migração.
+       * Assim o tutor não fica bloqueado pelo PGRST202; depois da migração,
+       * o caminho transacional acima continua sendo usado automaticamente.
+       */
+      const missingRpc = error && (
+        error.code === "PGRST202" ||
+        /could not find the function|function .* does not exist|schema cache/i.test(error.message || "")
+      );
+      if (!missingRpc) throw error;
+      const legacyRow = {
+        cod_pet: row.cod_pet,
+        cod_veterinario: row.cod_veterinario || null,
+        tipo: row.tipo || null,
+        diagnostico_motivo: row.diagnostico_motivo,
+        sintomas: row.sintomas || null,
+        tratamento: row.tratamento || null,
+        nome_clinica: row.nome_clinica || null,
+        peso: weight > 0 ? weight : null,
+        data: row.data,
+      };
+      const history = await db.insertHistory(legacyRow);
+      if (weight > 0) {
+        try {
+          await db.insertWeight({ pet_cod: row.cod_pet, peso: weight, data: row.data });
+        } catch (weightError) {
+          // Evita deixar histórico órfão quando a instalação legada falhar no peso.
+          try { await db.deleteHistory(history.cod); } catch (_) { /* RLS pode bloquear a limpeza */ }
+          throw weightError;
+        }
+      }
+      return history;
+    }
     const history = Array.isArray(data) ? data[0] : data;
     if (!history || !history.cod) {
       const error = new Error("O banco não retornou o registro clínico salvo.");
