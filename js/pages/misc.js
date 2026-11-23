@@ -37,6 +37,23 @@
       const maxWeight = Math.max(1, ...chart.map((w) => Number(w.peso)));
       const last = weights[weights.length - 1];
       const lastWeight = last ? last.peso + " kg (" + R.formatDate(last.data) + ")" : "Sem registros";
+      const formatWeight = (value) => {
+        const n = Number(value);
+        return Number.isFinite(n) ? n.toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + " kg" : "—";
+      };
+      const weightRows = weights.length
+        ? weights.slice().reverse().map((w, index, list) => {
+            const previous = list[index + 1];
+            const delta = previous ? Number(w.peso) - Number(previous.peso) : null;
+            const deltaText = delta === null || !Number.isFinite(delta)
+              ? "—"
+              : (delta > 0 ? "+" : "") + delta.toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + " kg";
+            const deltaClass = delta === null ? "neutral" : delta > 0 ? "up" : delta < 0 ? "down" : "neutral";
+            return '<tr><td><strong>' + esc(R.formatDate(w.data)) + '</strong><span class="weight-table-sub">Registro de peso</span></td>' +
+              '<td class="weight-table-value">' + esc(formatWeight(w.peso)) + '</td>' +
+              '<td><span class="weight-delta ' + deltaClass + '">' + esc(deltaText) + "</span></td></tr>";
+          }).join("")
+        : '<tr><td colspan="3" class="weight-empty">Nenhum registro de peso encontrado.</td></tr>';
 
       const bars = chart.length
         ? chart.map((w) => {
@@ -69,7 +86,9 @@
         '<button class="btn-sm btn-green" data-act="pdf">⬇ Baixar PDF</button></div>' +
         '<div class="grid-2" style="margin-bottom:20px"><div class="card"><div class="card-header"><div class="card-title-icon">' +
         '<div class="title-icon" style="background:var(--amber-light)">⚖️</div><span class="card-title">Evolução de Peso — ' + esc(pet.nome) + "</span></div>" +
-        P.petSelect(pet.cod) + '</div><div class="weight-chart">' + bars + "</div></div>" +
+        P.petSelect(pet.cod) + '</div><div class="weight-chart">' + bars + "</div>" +
+        '<div class="weight-table-wrap"><table class="weight-table"><thead><tr><th>Data</th><th>Peso</th><th>Variação</th></tr></thead><tbody>' + weightRows +
+        '</tbody></table></div></div>' +
         '<div class="card"><div class="card-header"><div class="card-title-icon"><div class="title-icon" style="background:var(--sky-light)">📊</div>' +
         '<span class="card-title">Frequência de Consultas</span></div></div><div style="display:grid;gap:10px;margin-top:4px">' + freq + "</div></div></div>" +
         '<div class="card"><div class="card-header"><div class="card-title-icon"><div class="title-icon" style="background:var(--purple-light)">🔍</div>' +
