@@ -207,9 +207,45 @@ window.Itapet = window.Itapet || {};
   db.insertReminder = (row) => result(sb.from("lembrete").insert(row).select("*").single());
   db.deleteReminder = (cod) => result(sb.from("lembrete").delete().eq("cod", cod).select("cod").single());
   db.saveVeterinarian = (row) => result(sb.from("veterinario").insert(row).select("*").single());
-  db.linkPetByCode = (codigo) => result(sb.rpc("itapet_link_pet_by_code", { _codigo: codigo }));
+  db.linkPetByCode = async (codigo) => {
+    const data = await result(sb.rpc("itapet_link_pet_by_code", { _codigo: codigo }));
+    // A RPC retorna integer, mas aceitar também as formas de retorno de
+    // versões antigas evita que uma alteração de assinatura quebre o front-end.
+    const row = Array.isArray(data) ? data[0] : data;
+    const value = row && typeof row === "object"
+      ? (row.pet_cod ?? row.cod_pet ?? row.cod)
+      : row;
+    const petCod = Number(value);
+    if (!Number.isInteger(petCod) || petCod <= 0) {
+      const error = new Error("A vinculação retornou um identificador de pet inválido.");
+      error.code = "ITAPET_INVALID_RPC_RETURN";
+      throw error;
+    }
+    return petCod;
+  };
+  db.createHistoryWithWeight = async (row, weight, requestId) => {
+    const data = await result(sb.rpc("itapet_create_history_with_weight", {
+      _cod_pet: row.cod_pet,
+      _cod_veterinario: row.cod_veterinario || null,
+      _tipo: row.tipo || null,
+      _diagnostico_motivo: row.diagnostico_motivo,
+      _sintomas: row.sintomas || null,
+      _tratamento: row.tratamento || null,
+      _nome_clinica: row.nome_clinica || null,
+      _peso: weight > 0 ? weight : null,
+      _data: row.data,
+      _request_id: requestId || null,
+    }));
+    const history = Array.isArray(data) ? data[0] : data;
+    if (!history || !history.cod) {
+      const error = new Error("O banco não retornou o registro clínico salvo.");
+      error.code = "ITAPET_INVALID_HISTORY_RETURN";
+      throw error;
+    }
+    return history;
+  };
   db.unlinkPet = (clinicCod, petCod) =>
-    result(sb.from("clinicas_e_pets").delete().eq("cod_clinica", clinicCod).eq("cod_pet", petCod).select("cod"));
+    result(sb.from("clinicas_e_pets").delete().eq("cod_clinica", clinicCod).eq("cod_pet", petCod).select("cod_clinica, cod_pet"));
 
   db.uploadDocument = async (file, petCod, userId, type) => {
     const path = "pets/" + petCod + "/" + userId + "/" + Date.now() + "-" + R.safeFileName(file.name);
@@ -243,6 +279,15 @@ window.Itapet = window.Itapet || {};
   db.errorMessage = (error) => {
     const msg = (error && error.message) || "";
     const code = (error && error.code) || "";
+    if (/\[ITAPET_NOT_CLINIC\]/i.test(msg)) return "A vinculação só pode ser feita por uma conta de clínica.";
+    if (/\[ITAPET_INVALID_PET_CODE\]/i.test(msg)) return "Código inválido. Use o formato PET-AB12-34.";
+    if (/\[ITAPET_PET_NOT_FOUND\]/i.test(msg)) return "Nenhum pet foi encontrado com esse código.";
+    if (/\[ITAPET_DUPLICATE_PET_CODE\]/i.test(msg)) return "Esse código está duplicado no cadastro. Corrija os pets duplicados no Supabase.";
+    if (/\[ITAPET_ALREADY_LINKED\]/i.test(msg)) return "Este pet já está vinculado a esta clínica.";
+    if (/\[ITAPET_HISTORY_ACCESS\]/i.test(msg)) return "Você não tem permissão para registrar informações neste pet.";
+    if (/\[ITAPET_HISTORY_INVALID\]/i.test(msg)) return "Confira a data, o diagnóstico e o peso informado.";
+    if (code === "ITAPET_INVALID_RPC_RETURN" || code === "ITAPET_INVALID_HISTORY_RETURN")
+      return "O banco não confirmou a operação. Aplique a migração do Itapet e tente novamente.";
     if (code === "invalid_credentials" || /invalid login credentials/i.test(msg))
       return "E-mail ou senha incorretos. Confira seus dados e tente novamente.";
     if (/already registered|user_already_exists/i.test(msg + code))

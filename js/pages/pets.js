@@ -83,6 +83,7 @@
           ? '<button class="btn-sm btn-outline" data-act="open-modal" data-modal="pet" data-cod="' + pet.cod + '">Editar</button>' +
             '<button class="btn-sm btn-outline" data-act="del-pet" data-cod="' + pet.cod + '">Excluir</button>'
           : '<button class="btn-sm btn-outline" data-act="unlink-pet" data-cod="' + pet.cod + '">Remover vínculo</button>') +
+        (pet.codigo ? '<button class="btn-sm btn-outline" data-act="copy-pet-code" data-code="' + esc(pet.codigo) + '">Copiar código</button>' : "") +
         "</div></div>").join("");
 
       el.innerHTML = P.view(
@@ -141,7 +142,8 @@
       if (prontTab === "historico") {
         body =
           '<div class="card"><div class="card-header"><span class="card-title">Histórico de Consultas</span>' +
-          '<button class="btn-sm btn-green" data-act="open-modal" data-modal="consulta">+ Novo registro</button></div><div class="timeline">' +
+          (S.role === "clinica" ? '<button class="btn-sm btn-green" data-act="open-modal" data-modal="consulta">+ Novo registro</button>' : "") +
+          '</div><div class="timeline">' +
           (records.length
             ? records.map((item) =>
                 '<div class="timeline-item"><div class="timeline-dot">📋</div><div class="timeline-content"><div class="timeline-date">' +
@@ -149,7 +151,8 @@
                 esc(item.diagnostico_motivo || item.tipo || "Registro") + '</div><div class="timeline-desc">' +
                 esc([item.sintomas, item.tratamento, item.nome_clinica && "Clínica: " + item.nome_clinica,
                   item.peso && "Peso: " + String(item.peso).replace(".", ",") + " kg"].filter(Boolean).join(" · ")) + "</div>" +
-                '<button class="btn-sm btn-outline" style="margin-top:8px" data-act="del-history" data-cod="' + item.cod + '">Excluir</button></div></div>').join("")
+                (S.role === "clinica" ? '<button class="btn-sm btn-outline" style="margin-top:8px" data-act="del-history" data-cod="' + item.cod + '">Excluir</button>' : "") +
+                "</div></div>").join("")
             : '<p class="text-sm text-mid">Nenhum registro clínico.</p>') +
           "</div></div>";
       } else if (prontTab === "diagnosticos") {
@@ -193,7 +196,7 @@
           '<div class="vaccine-item"><div class="vax-icon">💉</div><div class="vax-info"><div class="vax-name">' + esc(item.diagnostico_motivo) +
           '</div><div class="vax-date">' + esc("Aplicada: " + R.formatDate(item.data) + " · " + (item.tratamento || "")) + "</div></div>" +
           (booster ? '<span class="vax-status ' + (due ? "vax-soon" : "vax-ok") + '">' + (due ? "⚠ Reforço vencido" : "✓ Em dia") + "</span>" : "") +
-          '<button class="btn-sm btn-outline" data-act="del-history" data-cod="' + item.cod + '">Excluir</button></div>'
+          (S.role === "clinica" ? '<button class="btn-sm btn-outline" data-act="del-history" data-cod="' + item.cod + '">Excluir</button>' : "") + "</div>"
         );
       }).join("");
       el.innerHTML = P.view(

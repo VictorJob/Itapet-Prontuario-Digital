@@ -136,6 +136,7 @@ window.Itapet = window.Itapet || {};
         if (profile.role !== "tutor") return toast("Entre como tutor para cadastrar pets.");
         if (!nome) return toast("Informe o nome do pet ⚠️");
         if (!code) return toast("Informe ou gere um código ⚠️");
+        if (!R.isValidPetCode(code)) return toast("Código inválido. Use o formato PET-AB12-34.");
         if (!ownerName || !ownerPhone) return toast("Informe o nome e o telefone do responsável ⚠️");
         if (conflictFor(code)) return toast("Este código já está sendo usado por outro pet.");
         try {
@@ -162,16 +163,19 @@ window.Itapet = window.Itapet || {};
     });
     if (!modal) return;
 
-    const conflictFor = (code) => S.data.pets.find((p) => p.codigo === code && (!pet || p.cod !== pet.cod));
+    const conflictFor = (code) => S.data.pets.find((p) => R.normalizeCode(p.codigo) === code && (!pet || p.cod !== pet.cod));
     function checkCode() {
       const code = R.normalizeCode(modal.querySelector('[name="codigo"]').value);
       const conflict = conflictFor(code);
       const hint = modal.querySelector("#code-hint");
-      hint.style.color = conflict ? "var(--amber)" : "var(--text-light)";
+      const valid = !code || R.isValidPetCode(code);
+      hint.style.color = conflict || !valid ? "var(--amber)" : "var(--text-light)";
       hint.textContent = conflict
         ? "⚠ Código já pertence a " + conflict.nome + "."
-        : "Informe um código único. A clínica usa este código para vincular o pet.";
-      modal.querySelector('[data-m="save"]').disabled = Boolean(conflict);
+        : !valid
+          ? "⚠ Use o formato PET-AB12-34. Este é o código de identificação, não o da coleira."
+          : "A clínica usa este código de identificação para vincular o pet.";
+      modal.querySelector('[data-m="save"]').disabled = Boolean(conflict || !valid);
     }
     checkCode();
   }
@@ -222,7 +226,9 @@ window.Itapet = window.Itapet || {};
   /* ---------- Novo registro no prontuário ---------- */
   function openConsulta() {
     const S = I.state;
+    if (S.role !== "clinica") return I.ui.toast("Apenas uma clínica vinculada pode registrar informações.");
     const clinic = S.role === "clinica";
+    let requestId = null;
     const today = R.localDateISO(new Date());
     const types = [["consulta", "Consulta"], ["diagnostico", "Diagnóstico"], ["exame", "Exame"], ["procedimento", "Procedimento"], ["tratamento", "Tratamento"]];
     const body =
@@ -249,14 +255,20 @@ window.Itapet = window.Itapet || {};
         const vetName = f.vet.trim();
         const vet = clinic ? S.data.vets.find((v) => v.nome.trim().toLowerCase() === vetName.toLowerCase()) : undefined;
         try {
-          await db.insertHistory({
+          if (!requestId) requestId = window.crypto && window.crypto.randomUUID
+            ? window.crypto.randomUUID()
+            : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+              const r = Math.random() * 16 | 0;
+              const v = c === "x" ? r : (r & 0x3 | 0x8);
+              return v.toString(16);
+            });
+          await db.createHistoryWithWeight({
             cod_pet: petId, cod_veterinario: vet ? vet.cod : null, tipo: f.type, diagnostico_motivo: reason,
             sintomas: f.symptoms.trim() || null,
             tratamento: [f.treatment.trim(), vetName].filter(Boolean).join(" · ") || null,
             nome_clinica: (clinic ? S.profile.nome : f.clinic.trim()) || null,
-            peso: weight > 0 ? weight : null, data: f.date,
-          });
-          if (weight > 0) await db.insertWeight({ pet_cod: petId, peso: weight, data: f.date });
+            data: f.date,
+          }, weight, requestId);
           close();
           await I.refresh();
           toast((R.HISTORY_TYPE_LABELS[f.type] || "Registro") + " salvo no prontuário.");
@@ -325,13 +337,15 @@ window.Itapet = window.Itapet || {};
     const body =
       '<p class="text-sm text-mid mb-4">Peça ao tutor o código do pet (aparece no cartão do pet, ex.: PET-AB12-34). ' +
       "Depois de vinculado, a clínica pode ver e atualizar o prontuário.</p>" +
-      input("Código do pet", "code", { placeholder: "PET-AB12-34" }) +
+      input("Código do pet (não é o código da coleira)", "code", { placeholder: "PET-AB12-34" }) +
       '<button class="btn-primary" data-m="save">Vincular paciente</button>';
     const modal = show("🔗 Vincular paciente", body, { maxWidth: 440 }, {
       input: (el) => { if (el.name === "code") el.value = R.normalizeCode(el.value); },
       save: (btn) => saving(btn, "Vinculando...", async () => {
         const code = R.normalizeCode(val(modal).code);
         if (!code) return toast("Informe o código do pet.");
+        if (I.state.role !== "clinica") return toast("A vinculação só pode ser feita por uma conta de clínica.");
+        if (!R.isValidPetCode(code)) return toast("Código inválido. Use o formato PET-AB12-34.");
         try {
           const petCod = await db.linkPetByCode(code);
           I.setActivePetId(petCod);

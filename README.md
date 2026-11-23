@@ -27,8 +27,9 @@ contas que ficaram presas no cadastro (backfill) e garante as políticas de INSE
 do próprio perfil. O app já funciona sem rodar o script.
 
 ## Como rodar
-1. Edite `js/config.js` com a URL e a chave pública (publishable) do seu Supabase
-   (`VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` do `.env` original).
+1. Configure `SUPABASE_URL` e `SUPABASE_KEY` no ambiente de build da Vercel. O
+   `build.mjs` gera `js/config.js` automaticamente com esses valores públicos;
+   não versione esse arquivo nem use uma chave `service_role`/`sb_secret_`.
 2. Sirva a pasta por HTTP (não abra com duplo clique, o login por e-mail precisa de uma URL real):
    `python3 -m http.server 8080` e acesse http://localhost:8080
 3. No painel do Supabase (Authentication → URL Configuration), adicione essa URL
@@ -38,7 +39,8 @@ do próprio perfil. O app já funciona sem rodar o script.
 - `index.html` — app principal (login + área autenticada, rotas por hash: `#/dashboard`, `#/pets`...)
 - `redefinir-senha.html` + `js/reset.js` — página aberta pelo link de recuperação de senha
 - `css/styles.css` — estilos (Tailwind removido; reset mínimo incluído)
-- `js/config.js` — credenciais do Supabase
+- `build.mjs` + `vercel.json` — geram `js/config.js` com a configuração pública no build
+- `js/config.js` — arquivo gerado, ignorado pelo Git
 - `js/supabase.js` — cliente Supabase (CDN)
 - `js/rules.js` — regras de negócio puras (CNPJ, datas, validações, código do pet...)
 - `js/db.js` — acesso a dados (mesmas queries, RPCs e buckets do original)
@@ -56,5 +58,22 @@ e cada modal com `Itapet.modals.nome = { open(pet), close() }`. Abra um modal co
 
 ## Antes de publicar
 - Teste o fluxo completo com o seu Supabase (cadastro, login, criar pet, vacina, upload de documento).
-- O arquivo `js/config.js` contém só a chave pública (publishable); nunca coloque a service role key no front-end.
+- O build gera `js/config.js` apenas com a chave pública (publishable); nunca coloque a service role key no front-end.
 - Confira as Redirect URLs do Supabase (veja "Como rodar").
+
+## Correção de vínculo e histórico (23/11/2026)
+
+O vínculo de paciente usa o campo `pet.codigo` no formato `PET-AB12-34`. O campo
+`pet.cod_coleira` continua separado e não é usado para localizar o animal. A tela
+valida o formato, mostra mensagens para código inexistente/duplicado e permite ao
+tutor copiar o código exibido no cartão do pet.
+
+O salvamento de um novo registro clínico usa a RPC
+`itapet_create_history_with_weight`, que grava `historico` e, quando informado,
+`pet_peso` na mesma transação. A requisição recebe um UUID de idempotência para
+que uma nova tentativa após timeout não crie uma consulta duplicada.
+
+Antes de publicar esta versão, execute uma vez o script
+`sql/2026-11-23-corrigir-vinculo-e-historico.sql` no SQL Editor do Supabase. Ele
+cria as duas RPCs, adiciona os índices necessários e recria as políticas RLS de
+`clinicas_e_pets`, `historico` e `pet_peso` sem desativar o RLS.

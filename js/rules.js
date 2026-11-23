@@ -20,6 +20,10 @@ window.Itapet = window.Itapet || {};
 
   const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   /** Códigos de pet: PET-AB12-34 (sem caracteres ambíguos como 0/O ou 1/I). */
+  // A geração evita 0/O/1/I, mas o formato aceito também preserva códigos
+  // antigos ou digitados manualmente com qualquer letra/dígito.
+  R.PET_CODE_PATTERN = /^PET-[A-Z0-9]{4}-[A-Z0-9]{2}$/;
+  R.isValidPetCode = (code) => R.PET_CODE_PATTERN.test(R.normalizeCode(code));
   R.generatePetCode = (taken = [], random = Math.random) => {
     for (let attempt = 0; attempt < 50; attempt++) {
       let code = "PET-";

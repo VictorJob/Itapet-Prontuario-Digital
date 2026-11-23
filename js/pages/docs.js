@@ -130,7 +130,7 @@
               '<div class="prescription-card"><div class="rx-name">' + esc(item.diagnostico_motivo) + '</div><div class="rx-dose">' +
               esc([item.sintomas, pet && "🐾 " + pet.nome].filter(Boolean).join(" · ")) + "</div>" +
               '<div class="rx-schedule"><span class="rx-pill">📅 ' + esc(R.formatDate(item.data)) + "</span></div>" +
-              '<button class="btn-sm btn-outline" style="margin-top:10px" data-act="del-history" data-cod="' + item.cod + '">Excluir</button></div>'
+              (S.role === "clinica" ? '<button class="btn-sm btn-outline" style="margin-top:10px" data-act="del-history" data-cod="' + item.cod + '">Excluir</button>' : "") + "</div>"
             );
           }).join("")
         : '<div class="card"><p class="text-sm text-mid">Nenhuma medicação registrada.</p></div>';

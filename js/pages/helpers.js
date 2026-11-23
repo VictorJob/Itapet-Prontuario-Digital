@@ -110,11 +110,22 @@ window.Itapet = window.Itapet || {};
       I.openModal(el.dataset.modal, pet);
     },
     "select-pet": (el) => I.setActivePetId(Number(el.dataset.cod)), // o href do <a> faz a navegação
+    "copy-pet-code": async (el) => {
+      const code = el.dataset.code || "";
+      if (!code) return;
+      try {
+        await navigator.clipboard.writeText(code);
+        I.ui.toast("Código copiado: " + code);
+      } catch (error) {
+        I.ui.toast("Não foi possível copiar automaticamente. Código: " + code);
+      }
+    },
     "del-appointment": (el) => {
       if (!window.confirm("Excluir esta consulta/lembrete?")) return;
       P.run(() => db.deleteReminder(Number(el.dataset.cod)), "Consulta removida.");
     },
     "del-history": (el) => {
+      if (I.state.role !== "clinica") return I.ui.toast("Apenas a clínica vinculada pode alterar o prontuário.");
       if (!window.confirm("Excluir este registro clínico?")) return;
       P.run(() => db.deleteHistory(Number(el.dataset.cod)), "Registro excluído.");
     },
