@@ -325,6 +325,7 @@ end;
 $$;
 
 alter table public.clinicas_e_pets enable row level security;
+alter table public.pet enable row level security;
 alter table public.historico enable row level security;
 alter table public.pet_peso enable row level security;
 
@@ -337,12 +338,47 @@ begin
     select schemaname, tablename, policyname
       from pg_policies
      where schemaname = 'public'
-       and tablename in ('clinicas_e_pets', 'historico', 'pet_peso')
+       and tablename in ('clinicas_e_pets', 'pet', 'historico', 'pet_peso')
   loop
     execute format('drop policy if exists %I on %I.%I', p.policyname, p.schemaname, p.tablename);
   end loop;
 end;
 $$;
+
+/* A clínica só enxerga pets que tenham vínculo real em clinicas_e_pets. */
+create policy "itapet_pets_select_tutor_or_linked_clinic" on public.pet
+  for select to authenticated
+  using (
+    exists (
+      select 1 from public.tutor t
+       where t.cod = pet.cod_tutor
+         and t.auth_user_id = (select auth.uid())
+    )
+    or exists (
+      select 1
+        from public.clinicas_e_pets cp
+        join public.clinica c on c.cod = cp.cod_clinica
+       where cp.cod_pet = pet.cod
+         and c.auth_user_id = (select auth.uid())
+    )
+  );
+
+create policy "itapet_pets_manage_own_tutor" on public.pet
+  for all to authenticated
+  using (
+    exists (
+      select 1 from public.tutor t
+       where t.cod = pet.cod_tutor
+         and t.auth_user_id = (select auth.uid())
+    )
+  )
+  with check (
+    exists (
+      select 1 from public.tutor t
+       where t.cod = pet.cod_tutor
+         and t.auth_user_id = (select auth.uid())
+    )
+  );
 
 drop policy if exists "participants read clinic pet links" on public.clinicas_e_pets;
 drop policy if exists "itapet_clinics_read_pet_links" on public.clinicas_e_pets;

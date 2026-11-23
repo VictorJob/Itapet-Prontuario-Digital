@@ -68,6 +68,12 @@ O vínculo de paciente usa o campo `pet.codigo` no formato `PET-AB12-34`. O camp
 valida o formato, mostra mensagens para código inexistente/duplicado e permite ao
 tutor copiar o código exibido no cartão do pet.
 
+`clinicas_e_pets` é a fonte oficial do vínculo entre clínica e pet. A RPC de vínculo
+insere nessa tabela usando `(cod_clinica, cod_pet)`, e a política RLS de `pet` só
+permite que uma clínica consulte pets que tenham uma linha correspondente nessa
+tabela. A tela pode consultar `pet` diretamente porque o filtro é aplicado pelo
+RLS no banco; não existe vínculo automático apenas por abrir a tela de pacientes.
+
 O salvamento de um novo registro clínico usa a RPC
 `itapet_create_history_with_weight`, que grava `historico` e, quando informado,
 `pet_peso` na mesma transação. A requisição recebe um UUID de idempotência para
