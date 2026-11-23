@@ -226,7 +226,6 @@ window.Itapet = window.Itapet || {};
   /* ---------- Novo registro no prontuário ---------- */
   function openConsulta() {
     const S = I.state;
-    if (S.role !== "clinica") return I.ui.toast("Apenas uma clínica vinculada pode registrar informações.");
     const clinic = S.role === "clinica";
     let requestId = null;
     const today = R.localDateISO(new Date());
@@ -251,7 +250,7 @@ window.Itapet = window.Itapet || {};
         if (!petId || !reason || !f.date) return toast("Selecione o pet, informe o motivo e a data.");
         const problem = R.historyDateError(f.date, R.localDateISO(new Date())) || R.weightError(f.weight);
         if (problem) return toast(problem);
-        const weight = Number(f.weight.replace(",", "."));
+        const weight = f.weight.trim() ? Number(f.weight.replace(",", ".")) : null;
         const vetName = f.vet.trim();
         const vet = clinic ? S.data.vets.find((v) => v.nome.trim().toLowerCase() === vetName.toLowerCase()) : undefined;
         try {

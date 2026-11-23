@@ -9,7 +9,7 @@
   - cria uma RPC atômica para historico + pet_peso;
   - adiciona idempotência para evitar duplicidade quando a resposta de uma
     requisição se perde e o usuário tenta salvar novamente;
-  - mantém RLS ativo: tutor lê seus pets; clínica vinculada lê e escreve o prontuário.
+  - mantém RLS ativo: tutor lê e insere nos próprios pets; clínica vinculada lê e escreve o prontuário.
 
   A migração não apaga nem reescreve dados existentes. Se encontrar códigos
   duplicados ignorando maiúsculas/minúsculas, interrompe antes de criar o
@@ -176,17 +176,21 @@ begin
    where c.auth_user_id = v_uid
    limit 1;
 
-  if v_clinica_cod is null then
-    raise exception '[ITAPET_HISTORY_ACCESS] Apenas clínicas podem registrar informações no prontuário.'
-      using errcode = '42501';
-  end if;
-
   if not exists (
     select 1
-      from public.clinicas_e_pets cp
-      join public.clinica c on c.cod = cp.cod_clinica
-     where cp.cod_pet = _cod_pet
-       and c.auth_user_id = v_uid
+      from public.pet p
+      left join public.tutor t on t.cod = p.cod_tutor
+     where p.cod = _cod_pet
+       and (
+         t.auth_user_id = v_uid
+         or exists (
+           select 1
+             from public.clinicas_e_pets cp
+             join public.clinica c on c.cod = cp.cod_clinica
+            where cp.cod_pet = p.cod
+              and c.auth_user_id = v_uid
+         )
+       )
   ) then
     raise exception '[ITAPET_HISTORY_ACCESS] Você não tem permissão para registrar informações neste pet.'
       using errcode = '42501';
@@ -381,7 +385,7 @@ create policy "itapet_clinics_delete_pet_links" on public.clinicas_e_pets
     )
   );
 
-/* Histórico: tutor e clínica vinculada podem ler; somente clínica vinculada escreve. */
+/* Histórico: tutor e clínica vinculada podem ler; tutor insere no próprio pet; clínica edita/exclui. */
 drop policy if exists "participants manage pet history" on public.historico;
 drop policy if exists "itapet_history_select_participant" on public.historico;
 drop policy if exists "itapet_history_insert_participant" on public.historico;
@@ -401,9 +405,14 @@ create policy "itapet_history_select_participant" on public.historico
     )
   );
 
-create policy "itapet_history_insert_clinic" on public.historico
+create policy "itapet_history_insert_participant" on public.historico
   for insert to authenticated
   with check (
+    exists (
+      select 1 from public.pet p join public.tutor t on t.cod = p.cod_tutor
+       where p.cod = historico.cod_pet and t.auth_user_id = (select auth.uid())
+    )
+    or
     exists (
       select 1 from public.clinicas_e_pets cp join public.clinica c on c.cod = cp.cod_clinica
        where cp.cod_pet = historico.cod_pet and c.auth_user_id = (select auth.uid())
@@ -434,7 +443,7 @@ create policy "itapet_history_delete_clinic" on public.historico
     )
   );
 
-/* Peso segue a mesma autorização: leitura pelos participantes, escrita pela clínica. */
+/* Peso segue a mesma autorização: leitura pelos participantes, inserção pelo tutor, edição/exclusão pela clínica. */
 drop policy if exists "participants manage pet weights" on public.pet_peso;
 drop policy if exists "itapet_weight_select_participant" on public.pet_peso;
 drop policy if exists "itapet_weight_insert_participant" on public.pet_peso;
@@ -454,9 +463,14 @@ create policy "itapet_weight_select_participant" on public.pet_peso
     )
   );
 
-create policy "itapet_weight_insert_clinic" on public.pet_peso
+create policy "itapet_weight_insert_participant" on public.pet_peso
   for insert to authenticated
   with check (
+    exists (
+      select 1 from public.pet p join public.tutor t on t.cod = p.cod_tutor
+       where p.cod = pet_peso.pet_cod and t.auth_user_id = (select auth.uid())
+    )
+    or
     exists (
       select 1 from public.clinicas_e_pets cp join public.clinica c on c.cod = cp.cod_clinica
        where cp.cod_pet = pet_peso.pet_cod and c.auth_user_id = (select auth.uid())

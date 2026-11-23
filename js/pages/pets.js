@@ -142,7 +142,7 @@
       if (prontTab === "historico") {
         body =
           '<div class="card"><div class="card-header"><span class="card-title">Histórico de Consultas</span>' +
-          (S.role === "clinica" ? '<button class="btn-sm btn-green" data-act="open-modal" data-modal="consulta">+ Novo registro</button>' : "") +
+          '<button class="btn-sm btn-green" data-act="open-modal" data-modal="consulta">+ Novo registro</button>' +
           '</div><div class="timeline">' +
           (records.length
             ? records.map((item) =>
