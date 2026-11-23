@@ -78,6 +78,12 @@ existe vínculo automático apenas por abrir a tela de pacientes.
 A mesma regra é aplicada ao Storage: a clínica vinculada pode gerar URLs assinadas
 para as fotos privadas dos pets que aparecem em sua lista de pacientes.
 
+As políticas de `pet` e `clinicas_e_pets` não podem consultar uma à outra em ciclo.
+A política de leitura de `clinicas_e_pets` usa somente a própria clínica autenticada;
+isso evita o erro `infinite recursion detected in policy for relation "pet"`.
+Se a migração anterior já tiver sido executada, aplique primeiro o script emergencial
+`sql/2026-11-23-fix-rls-recursion.sql`.
+
 O salvamento de um novo registro clínico usa a RPC
 `itapet_create_history_with_weight`, que grava `historico` e, quando informado,
 `pet_peso` na mesma transação. A requisição recebe um UUID de idempotência para

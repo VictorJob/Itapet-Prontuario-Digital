@@ -428,13 +428,6 @@ create policy "itapet_clinics_read_pet_links" on public.clinicas_e_pets
        where c.cod = clinicas_e_pets.cod_clinica
          and c.auth_user_id = (select auth.uid())
     )
-    or exists (
-      select 1
-        from public.pet p
-        join public.tutor t on t.cod = p.cod_tutor
-       where p.cod = clinicas_e_pets.cod_pet
-         and t.auth_user_id = (select auth.uid())
-    )
   );
 
 drop policy if exists "itapet_clinics_insert_pet_links" on public.clinicas_e_pets;
