@@ -1,23 +1,39 @@
-  :root {
-    --cream: #FDF8F2;
-    --green-dark: #1B4332;
-    --green-mid: #2D6A4F;
-    --green-light: #40916C;
-    --green-pale: #D8F3DC;
-    --coral: #E07A5F;
-    --coral-light: #FDEAE5;
-    --amber: #F4A261;
-    --amber-light: #FEF3E2;
-    --sky: #4895EF;
-    --sky-light: #E1EFFE;
-    --purple: #7B5EA7;
-    --purple-light: #EDE7F6;
-    --text-dark: #1A2E22;
-    --text-mid: #4A5568;
-    --text-light: #9CA3AF;
-    --white: #FFFFFF;
-    --surface: #F5FAF7;
-    --border: #E2EFE6;
+/* Itapet — estilos (CSS puro). Convertido do projeto React/Tailwind. */
+
+/* Reset mínimo (substitui o preflight do Tailwind, que o projeto original usava) */
+*, ::before, ::after { border-width: 0; border-style: solid; border-color: var(--border); }
+a { color: inherit; text-decoration: inherit; }
+img, svg, video, canvas { display: block; vertical-align: middle; }
+img, video { max-width: 100%; height: auto; }
+h1, h2, h3, h4, h5, h6 { font-size: inherit; font-weight: inherit; }
+ol, ul { list-style: none; }
+table { border-collapse: collapse; text-indent: 0; }
+button, input, select, textarea { font: inherit; letter-spacing: inherit; color: inherit; background-color: transparent; border-radius: 0; }
+button, [role="button"] { cursor: pointer; }
+button:disabled { cursor: default; }
+textarea { resize: vertical; }
+[hidden] { display: none !important; }
+
+:root {
+    --cream: oklch(0.981 0.010 72.7);
+    --green-dark: oklch(0.348 0.055 163.4);
+    --green-mid: oklch(0.476 0.078 162.2);
+    --green-light: oklch(0.596 0.098 161.4);
+    --green-pale: oklch(0.938 0.042 149.6);
+    --coral: oklch(0.688 0.133 35.8);
+    --coral-light: oklch(0.951 0.022 35.1);
+    --amber: oklch(0.781 0.127 57.9);
+    --amber-light: oklch(0.968 0.025 78.9);
+    --sky: oklch(0.664 0.154 254.1);
+    --sky-light: oklch(0.946 0.025 250.0);
+    --purple: oklch(0.542 0.114 301.0);
+    --purple-light: oklch(0.937 0.021 304.0);
+    --text-dark: oklch(0.280 0.034 157.0);
+    --text-mid: oklch(0.447 0.034 261.3);
+    --text-light: oklch(0.714 0.019 261.3);
+    --white: oklch(1.000 0 0);
+    --surface: oklch(0.981 0.007 160.1);
+    --border: oklch(0.940 0.018 155.8);
     --shadow-sm: 0 2px 8px rgba(27,67,50,0.06);
     --shadow-md: 0 4px 20px rgba(27,67,50,0.10);
     --shadow-lg: 0 10px 40px rgba(27,67,50,0.14);
@@ -26,7 +42,44 @@
     --radius-lg: 22px;
     --radius-xl: 32px;
     --sidebar-w: 260px;
-  }
+  /* shadcn tokens mapped to the Itapet palette */
+  --radius: 0.875rem;
+  --background: var(--cream);
+  --foreground: var(--text-dark);
+  --card: var(--white);
+  --card-foreground: var(--text-dark);
+  --popover: var(--white);
+  --popover-foreground: var(--text-dark);
+  --primary: var(--green-dark);
+  --primary-foreground: var(--white);
+  --secondary: var(--green-pale);
+  --secondary-foreground: var(--green-dark);
+  --muted: var(--surface);
+  --muted-foreground: var(--text-mid);
+  --accent: var(--amber-light);
+  --accent-foreground: var(--text-dark);
+  --destructive: var(--coral);
+  --destructive-foreground: var(--white);
+  --input: var(--border);
+  --ring: var(--green-light);
+  --chart-1: var(--green-mid);
+  --chart-2: var(--sky);
+  --chart-3: var(--amber);
+  --chart-4: var(--coral);
+  --chart-5: var(--purple);
+  --sidebar: var(--green-dark);
+  --sidebar-foreground: var(--white);
+  --sidebar-primary: var(--green-light);
+  --sidebar-primary-foreground: var(--white);
+  --sidebar-accent: var(--green-mid);
+  --sidebar-accent-foreground: var(--white);
+  --sidebar-border: var(--green-mid);
+  --sidebar-ring: var(--green-light);
+}
+
+
+/* ======== ITAPET APP STYLES (ported from the original stylesheet) ======== */
+
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -335,7 +388,7 @@
 
   /* ======== APP LAYOUT ======== */
   #app {
-    display: none;
+    display: flex;
     min-height: 100vh;
   }
 
@@ -725,6 +778,19 @@
     font-size: 34px;
     display: flex; align-items: center; justify-content: center;
     position: relative;
+  }
+
+  #dashboard-pets .pet-avatar {
+    flex: 0 0 70px;
+    overflow: hidden;
+  }
+
+  #dashboard-pets .pet-avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
   }
 
   .pet-avatar .status-dot {
@@ -1307,6 +1373,18 @@
     border: 3px solid rgba(255,255,255,0.4);
   }
 
+  .profile-avatar-large.has-photo {
+    overflow: hidden;
+  }
+
+  .profile-avatar-large img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
   .profile-info h2 {
     font-family: 'Playfair Display', serif;
     font-size: 28px;
@@ -1693,3 +1771,58 @@
   .w-full { width: 100%; }
   .justify-between { justify-content: space-between; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+
+  /* ======== MIGRATION ADDITIONS (React port) ======== */
+  .itapet-toast {
+    position: fixed; bottom: 32px; right: 32px;
+    background: var(--green-dark); color: var(--white);
+    padding: 14px 22px; border-radius: 12px;
+    font-size: 14px; font-weight: 500; max-width: 420px;
+    box-shadow: var(--shadow-lg);
+    opacity: 0; transform: translateY(10px);
+    transition: all 0.3s; z-index: 9999; pointer-events: none;
+  }
+  .itapet-toast.show { opacity: 1; transform: translateY(0); }
+
+  .auth-hint {
+    margin-top: 18px; padding: 12px 14px;
+    background: var(--green-pale); color: var(--green-dark);
+    border-radius: var(--radius-sm); font-size: 12.5px; line-height: 1.5;
+  }
+  .auth-link {
+    background: none; border: none; padding: 0; cursor: pointer;
+    color: var(--green-light); font-family: inherit; font-size: 13px; font-weight: 500;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .auth-link:hover { color: var(--green-dark); }
+  .auth-loading {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: var(--cream); color: var(--text-mid); font-size: 14px; gap: 12px;
+  }
+  .auth-loading .logo-icon {
+    width: 48px; height: 48px; border-radius: 14px; font-size: 24px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--green-light), var(--amber));
+  }
+  .mobile-menu-btn { display: none; }
+  .sidebar-backdrop { display: none; }
+  @media (max-width: 640px) {
+    .mobile-menu-btn { display: flex; }
+    .sidebar.open { transform: translateX(0); z-index: 300; }
+    .sidebar-backdrop.open {
+      display: block; position: fixed; inset: 0; z-index: 250;
+      background: oklch(0.2 0.03 160 / 0.45);
+    }
+    .itapet-toast { left: 16px; right: 16px; bottom: 16px; }
+  }
+  .btn-danger {
+    background: var(--coral); color: var(--white); border-radius: 6px; border: none;
+    padding: 7px 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 11px;
+  }
+  .btn-amber {
+    margin-top: 20px; padding: 12px; background: var(--amber); color: var(--white);
+    border-radius: 8px; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-weight: 600;
+  }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }

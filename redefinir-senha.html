@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redefinir senha — Itapet</title>
+  <meta name="description" content="Crie uma nova senha para sua conta Itapet.">
+  <link rel="icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="auth-screen">
+    <div class="auth-right" style="width:100%">
+      <form class="auth-card" id="reset-form">
+        <h2>Nova senha 🔑</h2>
+        <p class="subtitle" id="reset-subtitle">Abra esta página pelo link enviado ao seu e-mail.</p>
+        <div class="form-group">
+          <label for="new-password">Nova senha</label>
+          <input id="new-password" class="form-input" type="password" autocomplete="new-password" disabled>
+        </div>
+        <div class="form-group">
+          <label for="new-password-confirm">Confirmar senha</label>
+          <input id="new-password-confirm" class="form-input" type="password" autocomplete="new-password" disabled>
+        </div>
+        <button class="btn-primary" type="submit" id="reset-submit" disabled>Salvar nova senha</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/rules.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/reset.js"></script>
+</body>
+</html>

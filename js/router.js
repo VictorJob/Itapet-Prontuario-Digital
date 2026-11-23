@@ -1,39 +1,125 @@
-// ===== DYNAMIC PAGE ROUTER =====
-// Loads each view's markup on demand from pages/<name>.html and caches it,
-// then delegates to the original showView() defined in app.js.
+/* Roteador por hash (#/dashboard, #/pets, ...). Substitui o TanStack Router. */
+window.Itapet = window.Itapet || {};
+(function (I) {
+  /** Cada tela registra-se em Itapet.pages["/caminho"] = { render(container) }. */
+  I.pages = I.pages || {};
 
-const _pageCache = {};
-const _contentEl = document.querySelector('.content');
+  const MENUS = {
+    tutor: [
+      { section: "Principal" },
+      { to: "/dashboard", icon: "🏠", label: "Dashboard" },
+      { to: "/pets", icon: "🐶", label: "Meus Pets" },
+      { to: "/prontuario", icon: "📋", label: "Prontuário" },
+      { to: "/vacinas", icon: "💉", label: "Vacinas" },
+      { section: "Acompanhamento" },
+      { to: "/consultas", icon: "📅", label: "Consultas" },
+      { to: "/exames", icon: "🧪", label: "Exames" },
+      { to: "/medicamentos", icon: "💊", label: "Medicamentos" },
+      { to: "/lembretes", icon: "🔔", label: "Lembretes" },
+      { section: "Mais" },
+      { to: "/relatorios", icon: "📊", label: "Relatórios" },
+      { to: "/planos", icon: "💰", label: "Planos" },
+      { to: "/seguranca", icon: "🔐", label: "Segurança" },
+    ],
+    clinica: [
+      { section: "Clínica" },
+      { to: "/dashboard", icon: "🏠", label: "Dashboard" },
+      { to: "/clinica/perfil", icon: "🏥", label: "Dados da Clínica" },
+      { to: "/clinica/veterinarios", icon: "🩺", label: "Veterinários" },
+      { section: "Operação" },
+      { to: "/consultas", icon: "📅", label: "Agenda & Reservas" },
+      { to: "/pets", icon: "🐶", label: "Pacientes" },
+      { to: "/prontuario", icon: "📋", label: "Prontuário" },
+      { to: "/vacinas", icon: "💉", label: "Vacinas" },
+      { to: "/exames", icon: "🧪", label: "Exames" },
+      { to: "/medicamentos", icon: "💊", label: "Prescrições" },
+      { to: "/lembretes", icon: "🔔", label: "Lembretes" },
+      { section: "Gestão" },
+      { to: "/relatorios", icon: "📊", label: "Relatórios" },
+      { to: "/planos", icon: "💰", label: "Planos" },
+      { to: "/seguranca", icon: "🔐", label: "Segurança" },
+    ],
+  };
 
-async function loadPage(name) {
-  if (_pageCache[name]) return;
-  if (document.getElementById('view-' + name)) { _pageCache[name] = true; return; }
-  const res = await fetch('pages/' + name + '.html');
-  if (!res.ok) throw new Error('Página não encontrada: ' + name);
-  const html = await res.text();
-  _contentEl.insertAdjacentHTML('beforeend', html);
-  _pageCache[name] = true;
-  // Re-apply role visibility to the freshly injected markup
-  if (typeof applyRoleVisibility === 'function' && typeof currentRole !== 'undefined') {
-    applyRoleVisibility();
+  function pageTitle(path, role) {
+    const tutor = role === "tutor";
+    const titles = {
+      "/dashboard": ["Dashboard", "Visão geral"],
+      "/pets": tutor ? ["Meus Pets", "Gerencie todos os seus pets cadastrados"] : ["Pacientes", "Pets vinculados à sua clínica"],
+      "/prontuario": ["Prontuário Digital", "Histórico clínico completo do pet selecionado"],
+      "/vacinas": ["Carteira de Vacinação", "Controle de vacinas e reforços"],
+      "/consultas": tutor ? ["Consultas", "Acompanhe as consultas dos seus pets"] : ["Agenda", "Agendamentos e atendimentos"],
+      "/exames": tutor
+        ? ["Exames & Documentos", "Visualize solicitações e laudos da clínica"]
+        : ["Exames & Documentos", "Upload, solicitações e visualização"],
+      "/medicamentos": tutor
+        ? ["Medicamentos", "Prescrições ativas dos seus pets"]
+        : ["Medicamentos", "Prescrições e controle de dosagem"],
+      "/lembretes": ["Lembretes", "Consultas, exames, medicamentos e avisos personalizados"],
+      "/relatorios": ["Relatórios & Insights", "Análise dos atendimentos"],
+      "/planos": ["Planos", "Escolha o melhor plano para você"],
+      "/seguranca": ["Segurança & Privacidade", "Proteção dos dados — LGPD"],
+      "/clinica/perfil": ["Dados da Clínica", "Atualize o cadastro da sua clínica"],
+      "/clinica/veterinarios": ["Veterinários & Reservas", "Gestão da equipe e solicitações dos tutores"],
+    };
+    return titles[path] || ["Itapet", ""];
   }
-  if (typeof renderLoadedView === 'function') renderLoadedView(name);
-}
 
-const _activateView = showView;
+  let token = 0;
 
-showView = function (name, navEl) {
-  if (document.getElementById('view-' + name)) {
-    _activateView(name, navEl);
-    return;
-  }
-  loadPage(name)
-    .then(() => _activateView(name, navEl))
-    .catch((err) => {
-      console.error(err);
-      if (typeof showToast === 'function') showToast('Não foi possível abrir esta página 😕');
-    });
-};
+  const router = {
+    menu: (role) => MENUS[role] || [],
+    titleFor: pageTitle,
 
-// Preload the dashboard so it's ready right after login
-loadPage('dashboard').catch(console.error);
+    /** Caminho atual a partir do hash; cai no dashboard se for inválido. */
+    current() {
+      const path = (location.hash || "").replace(/^#/, "").split("?")[0];
+      const valid = I.state.role && pageTitle(path, I.state.role)[0] !== "Itapet";
+      return valid ? path : "/dashboard";
+    },
+
+    go(path) {
+      if (location.hash === "#" + path) router.render();
+      else location.hash = path;
+    },
+
+    /** Desenha a página atual dentro de #page e atualiza título/menu. */
+    async render() {
+      const path = router.current();
+      const container = document.getElementById("page");
+      if (!container) return;
+      const my = ++token;
+      I.shell.update(path);
+      const page = I.pages[path];
+      if (!page) {
+        container.innerHTML =
+          '<div class="card" style="text-align:center;padding:40px">' +
+          '<div style="font-size:40px;margin-bottom:8px">🚧</div>' +
+          '<p class="text-sm text-mid">Esta tela ainda será migrada para HTML/JS puro.</p></div>';
+        return;
+      }
+      try {
+        container.innerHTML = "";
+        // cada tela registra seus próprios handlers; limpa os da tela anterior
+        container.onclick = container.onchange = container.oninput = null;
+        container.ondragover = container.ondragleave = container.ondrop = null;
+        await page.render(container);
+      } catch (error) {
+        if (my !== token) return;
+        console.error(error);
+        container.innerHTML = '<div class="card"><p class="text-sm text-mid">Não foi possível carregar esta tela.</p></div>';
+        I.ui.toast(I.db.errorMessage(error));
+      }
+    },
+
+    start() {
+      if (!router._bound) {
+        window.addEventListener("hashchange", () => I.state.profile && router.render());
+        router._bound = true;
+      }
+      if (!location.hash || location.hash === "#") history.replaceState(null, "", "#/dashboard");
+      router.render();
+    },
+  };
+  I.router = router;
+})(window.Itapet);
